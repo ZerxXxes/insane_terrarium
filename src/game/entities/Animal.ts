@@ -48,7 +48,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
         // Shadow beneath animal
         const shadowWidth = this.displayWidth * 0.7;
         const shadowHeight = this.displayWidth * 0.25;
-        this.shadow = scene.add.ellipse(x, y + this.displayHeight / 2, shadowWidth, shadowHeight, 0x000000, 0.3);
+        this.shadow = scene.add.ellipse(x, y + this.displayHeight * 0.35, shadowWidth, shadowHeight, 0x000000, 0.3);
         this.shadow.setDepth(9);
 
         // Thought bubble
@@ -84,7 +84,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
             this.seekingFood = null;
         }
         this.thoughtBubble.updatePosition(this.x, this.y, delta);
-        this.shadow.setPosition(this.x, this.y + this.displayHeight / 2);
+        this.shadow.setPosition(this.x, this.y + this.displayHeight * 0.35);
 
         // Movement: seek food if hungry, otherwise wander
         if (this.isHungry && this.seekingFood && this.seekingFood.active) {
