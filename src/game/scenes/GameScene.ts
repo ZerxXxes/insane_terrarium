@@ -266,6 +266,9 @@ export class GameScene extends Phaser.Scene {
         const foodConfig = FOOD_DATA[this.selectedFoodType];
         if (!foodConfig) return;
 
+        // Limit food in terrarium to prevent spam
+        if (this.foods.countActive() >= 5) return;
+
         if (foodConfig.cost > 0) {
             if (!this.economy.spendCoins(foodConfig.cost)) return;
         }
