@@ -79,8 +79,9 @@ export class GameScene extends Phaser.Scene {
         // Spawn starting animals
         this.spawnStarterAnimals();
 
-        // Click to drop food (but not on interactive shop items)
-        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        // Click to drop food (but not on interactive objects like coins or shop items)
+        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {
+            if (currentlyOver.length > 0) return;
             if (pointer.y >= SUBSTRATE_TOP && pointer.y <= SUBSTRATE_BOTTOM) {
                 this.dropFood(pointer.x, pointer.y);
             }
