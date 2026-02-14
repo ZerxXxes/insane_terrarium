@@ -21,6 +21,7 @@ import { HelperManager } from '../managers/HelperManager';
 import { HUD } from '../ui/HUD';
 import { ShopBar } from '../ui/ShopBar';
 import { PoacherAI } from '../systems/PoacherAI';
+import { Tutorial } from '../ui/Tutorial';
 
 export class GameScene extends Phaser.Scene {
     level: number = 1;
@@ -98,6 +99,7 @@ export class GameScene extends Phaser.Scene {
 
             animal.feed(nutrition);
             food.destroy();
+            this.events.emit('tutorialAdvance', 'animalFed');
 
             // Tree Snake breed check
             if (this.breedCheckFn && this.breedCheckFn()) {
@@ -108,11 +110,19 @@ export class GameScene extends Phaser.Scene {
         // Shop events
         this.events.on('buyAnimal', (key: string) => {
             const config = ANIMAL_DATA[key];
-            if (config) this.spawnAnimal(config);
+            if (config) {
+                this.spawnAnimal(config);
+                this.events.emit('tutorialAdvance', 'shopUsed');
+            }
         });
 
         this.events.on('selectFood', (key: string) => {
             this.selectedFoodType = key;
+            this.events.emit('tutorialAdvance', 'shopUsed');
+        });
+
+        this.events.on('eggBought', () => {
+            this.events.emit('tutorialAdvance', 'shopUsed');
         });
 
         // Poacher AI (level 2+)
@@ -126,6 +136,11 @@ export class GameScene extends Phaser.Scene {
 
         // Spawn helper pets
         this.spawnHelperPets();
+
+        // Tutorial (level 1 only)
+        if (this.level === 1) {
+            new Tutorial(this);
+        }
     }
 
     update(_time: number, _delta: number): void {
@@ -154,10 +169,24 @@ export class GameScene extends Phaser.Scene {
         this.levelManager.checkGameOver(this.animals.countActive());
     }
 
-    spawnAnimal(config: AnimalConfig): Animal {
+    spawnAnimal(config: AnimalConfig, dropIn: boolean = true): Animal {
         const x = Phaser.Math.Between(60, GAME_WIDTH - 60);
         const y = Phaser.Math.Between(SUBSTRATE_TOP + 30, SUBSTRATE_BOTTOM - 30);
         const animal = new Animal(this, x, y, config);
+
+        // Drop-in animation for shop purchases
+        if (dropIn) {
+            const finalY = animal.y;
+            animal.y = SUBSTRATE_TOP - 60;
+            animal.setAlpha(0);
+            this.tweens.add({
+                targets: animal,
+                y: finalY,
+                alpha: 1,
+                duration: 500,
+                ease: 'Bounce.easeOut',
+            });
+        }
 
         animal.on('dropCoin', (data: { x: number; y: number; value: number }) => {
             let value = data.value;
@@ -181,7 +210,7 @@ export class GameScene extends Phaser.Scene {
 
     private spawnStarterAnimals(): void {
         for (let i = 0; i < 2; i++) {
-            this.spawnAnimal(ANIMAL_DATA.gecko);
+            this.spawnAnimal(ANIMAL_DATA.gecko, false);
         }
     }
 
@@ -242,13 +271,34 @@ export class GameScene extends Phaser.Scene {
 
         const food = new Food(this, x, y, foodConfig);
         this.foods.add(food);
+        this.events.emit('tutorialAdvance', 'foodDropped');
     }
 
     private spawnCoin(x: number, y: number, value: number): void {
         const coin = new Coin(this, x, y, value);
-        coin.on('collected', (data: { value: number }) => {
+        coin.on('collected', (data: { value: number; x: number; y: number }) => {
             this.economy.addCoins(data.value);
+            this.coinCollectEffect(data.x, data.y);
+            this.events.emit('tutorialAdvance', 'coinCollected');
         });
         this.coinGroup.add(coin);
+    }
+
+    private coinCollectEffect(x: number, y: number): void {
+        // Sparkle particles using small graphics
+        for (let i = 0; i < 6; i++) {
+            const spark = this.add.circle(x, y, 3, 0xfbbf24).setDepth(20);
+            const angle = (Math.PI * 2 * i) / 6;
+            this.tweens.add({
+                targets: spark,
+                x: x + Math.cos(angle) * 30,
+                y: y + Math.sin(angle) * 30,
+                alpha: 0,
+                scale: 0,
+                duration: 400,
+                ease: 'Quad.easeOut',
+                onComplete: () => spark.destroy(),
+            });
+        }
     }
 }

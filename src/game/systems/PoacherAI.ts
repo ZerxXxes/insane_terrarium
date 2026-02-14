@@ -55,6 +55,9 @@ export class PoacherAI {
             poacher.setSpeedMultiplier(this.speedMultiplier);
         }
 
+        // Screen shake warning
+        this.scene.cameras.main.shake(300, 0.005);
+
         // Target the most valuable animal
         const target = this.pickTarget(animals);
         if (target) {

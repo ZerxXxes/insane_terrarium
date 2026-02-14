@@ -112,6 +112,22 @@ export class Animal extends Phaser.GameObjects.Sprite {
 
         this.emit('died', this);
 
+        // Death poof particles
+        for (let i = 0; i < 8; i++) {
+            const poof = this.scene.add.circle(this.x, this.y, Phaser.Math.Between(3, 6), 0xaaaaaa).setDepth(20).setAlpha(0.8);
+            const angle = (Math.PI * 2 * i) / 8;
+            this.scene.tweens.add({
+                targets: poof,
+                x: this.x + Math.cos(angle) * Phaser.Math.Between(20, 40),
+                y: this.y + Math.sin(angle) * Phaser.Math.Between(20, 40),
+                alpha: 0,
+                scale: 2,
+                duration: 500,
+                ease: 'Quad.easeOut',
+                onComplete: () => poof.destroy(),
+            });
+        }
+
         this.scene.tweens.add({
             targets: this,
             alpha: 0,
@@ -153,11 +169,25 @@ export class Animal extends Phaser.GameObjects.Sprite {
 
         // Flip sprite based on direction
         this.setFlipX(body.velocity.x < 0);
+
+        // Play walk animation
+        const walkKey = `${this.config.spriteKey}_walk`;
+        if (this.scene.anims.exists(walkKey) && this.anims.currentAnim?.key !== walkKey) {
+            this.play(walkKey);
+        }
     }
 
     private setVelocity(vx: number, vy: number): void {
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(vx, vy);
+
+        // Play idle when stopped
+        if (vx === 0 && vy === 0) {
+            const idleKey = `${this.config.spriteKey}_idle`;
+            if (this.scene.anims.exists(idleKey) && this.anims.currentAnim?.key !== idleKey) {
+                this.play(idleKey);
+            }
+        }
     }
 
     private reachedTarget(): boolean {

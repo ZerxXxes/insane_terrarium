@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 export class ThoughtBubble extends Phaser.GameObjects.Container {
     private bobOffset: number = 0;
     private baseOffsetY: number;
+    private pulseTween: Phaser.Tweens.Tween | null = null;
 
     constructor(scene: Phaser.Scene, parentHeight: number) {
         super(scene, 0, 0);
@@ -20,11 +21,29 @@ export class ThoughtBubble extends Phaser.GameObjects.Container {
     }
 
     show(): void {
+        if (this.visible) return;
         this.setVisible(true);
+
+        // Urgent pulse animation
+        this.pulseTween = this.scene.tweens.add({
+            targets: this,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            duration: 400,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+        });
     }
 
     hide(): void {
+        if (!this.visible) return;
         this.setVisible(false);
+        if (this.pulseTween) {
+            this.pulseTween.destroy();
+            this.pulseTween = null;
+            this.setScale(1);
+        }
     }
 
     updatePosition(parentX: number, parentY: number, delta: number): void {

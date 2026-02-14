@@ -40,6 +40,16 @@ export class PreloadScene extends Phaser.Scene {
         this.load.image('animal_salamander', 'assets/sprites/animal_salamander.png');
         this.load.image('animal_dragon', 'assets/sprites/animal_dragon.png');
 
+        // Animal walk frames
+        this.load.image('animal_gecko_walk', 'assets/sprites/animal_gecko_walk.png');
+        this.load.image('animal_frog_walk', 'assets/sprites/animal_frog_walk.png');
+        this.load.image('animal_chameleon_walk', 'assets/sprites/animal_chameleon_walk.png');
+        this.load.image('animal_salamander_walk', 'assets/sprites/animal_salamander_walk.png');
+        this.load.image('animal_dragon_walk', 'assets/sprites/animal_dragon_walk.png');
+
+        // Coin animation
+        this.load.image('coin_flip', 'assets/sprites/coin_flip.png');
+
         // Food
         this.load.image('food_cricket', 'assets/sprites/food_cricket.png');
         this.load.image('food_mealworm', 'assets/sprites/food_mealworm.png');
@@ -67,6 +77,41 @@ export class PreloadScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.createAnimations();
         this.scene.start('MenuScene');
+    }
+
+    private createAnimations(): void {
+        // Animal walk animations (2-frame cycles using individual images)
+        const animals = ['gecko', 'frog', 'chameleon', 'salamander', 'dragon'];
+        for (const name of animals) {
+            const key = `animal_${name}`;
+            this.anims.create({
+                key: `${key}_walk`,
+                frames: [
+                    { key: key },
+                    { key: `${key}_walk` },
+                ],
+                frameRate: 4,
+                repeat: -1,
+            });
+            this.anims.create({
+                key: `${key}_idle`,
+                frames: [{ key: key }],
+                frameRate: 1,
+                repeat: -1,
+            });
+        }
+
+        // Coin spin animation
+        this.anims.create({
+            key: 'coin_spin',
+            frames: [
+                { key: 'coin' },
+                { key: 'coin_flip' },
+            ],
+            frameRate: 4,
+            repeat: -1,
+        });
     }
 }

@@ -32,6 +32,11 @@ export class Coin extends Phaser.GameObjects.Sprite {
             },
         });
 
+        // Play spin animation
+        if (scene.anims.exists('coin_spin')) {
+            this.play('coin_spin');
+        }
+
         // Click to collect
         this.on('pointerdown', () => this.collect());
 
@@ -61,8 +66,8 @@ export class Coin extends Phaser.GameObjects.Sprite {
 
         this.scene.tweens.add({
             targets: this,
-            scaleX: 1.5,
-            scaleY: 1.5,
+            scaleX: 0.08,
+            scaleY: 0.08,
             alpha: 0,
             duration: 200,
             ease: 'Quad.easeOut',
