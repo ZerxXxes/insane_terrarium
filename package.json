@@ -1,0 +1,19 @@
+{
+  "name": "insane-terrarium",
+  "version": "0.1.0",
+  "description": "A 2D browser game — spiritual successor to Insaniquarium with a terrarium theme",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite/config.dev.mjs",
+    "build": "vite build --config vite/config.prod.mjs",
+    "preview": "vite preview --config vite/config.prod.mjs"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.0",
+    "vite": "^6.0.0",
+    "terser": "^5.37.0"
+  }
+}
