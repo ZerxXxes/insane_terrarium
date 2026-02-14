@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/GameConfig';
+import { HelperManager } from '../managers/HelperManager';
 
 export class MenuScene extends Phaser.Scene {
     constructor() {
@@ -27,6 +28,8 @@ export class MenuScene extends Phaser.Scene {
         startBtn.on('pointerover', () => startBtn.setStyle({ backgroundColor: '#16a34a' }));
         startBtn.on('pointerout', () => startBtn.setStyle({ backgroundColor: '#22c55e' }));
         startBtn.on('pointerdown', () => {
+            // Reset helper pets for a new game
+            new HelperManager(this.game).reset();
             this.scene.start('GameScene', { level: 1 });
         });
     }

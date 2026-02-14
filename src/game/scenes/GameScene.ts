@@ -6,8 +6,18 @@ import { getLevelConfig } from '../config/LevelData';
 import { Animal } from '../entities/Animal';
 import { Food } from '../entities/Food';
 import { Coin } from '../entities/Coin';
+import {
+    HelperPet,
+    applyTortoiseBehavior,
+    applyHermitCrabBehavior,
+    applySnailBehavior,
+    applyBeetleBehavior,
+    applyMillipedeBehavior,
+    applySnakeBehavior,
+} from '../entities/HelperPet';
 import { EconomyManager } from '../managers/EconomyManager';
 import { LevelManager } from '../managers/LevelManager';
+import { HelperManager } from '../managers/HelperManager';
 import { HUD } from '../ui/HUD';
 import { ShopBar } from '../ui/ShopBar';
 import { PoacherAI } from '../systems/PoacherAI';
@@ -19,9 +29,15 @@ export class GameScene extends Phaser.Scene {
     private animals!: Phaser.GameObjects.Group;
     private foods!: Phaser.GameObjects.Group;
     private coinGroup!: Phaser.GameObjects.Group;
+    private helperPetGroup!: Phaser.GameObjects.Group;
     private economy!: EconomyManager;
     private levelManager!: LevelManager;
     poacherAI: PoacherAI | null = null;
+
+    // Helper pet effect hooks
+    private coinBoostFn: ((x: number, y: number) => number) | null = null;
+    private nutritionMultiplierFn: (() => number) | null = null;
+    private breedCheckFn: (() => boolean) | null = null;
 
     constructor() {
         super('GameScene');
@@ -30,6 +46,9 @@ export class GameScene extends Phaser.Scene {
     init(data: { level?: number }): void {
         this.level = data.level ?? 1;
         this.selectedFoodType = 'cricket';
+        this.coinBoostFn = null;
+        this.nutritionMultiplierFn = null;
+        this.breedCheckFn = null;
     }
 
     create(): void {
@@ -48,6 +67,7 @@ export class GameScene extends Phaser.Scene {
         this.animals = this.add.group({ runChildUpdate: true });
         this.foods = this.add.group({ runChildUpdate: true });
         this.coinGroup = this.add.group({ runChildUpdate: true });
+        this.helperPetGroup = this.add.group({ runChildUpdate: true });
 
         // HUD
         new HUD(this, this.economy, this.level);
@@ -71,8 +91,18 @@ export class GameScene extends Phaser.Scene {
             const food = _foodObj as Food;
             if (!animal.isAlive || !animal.isHungry || !food.active) return;
 
-            animal.feed(food.nutrition);
+            let nutrition = food.nutrition;
+            if (this.nutritionMultiplierFn) {
+                nutrition *= this.nutritionMultiplierFn();
+            }
+
+            animal.feed(nutrition);
             food.destroy();
+
+            // Tree Snake breed check
+            if (this.breedCheckFn && this.breedCheckFn()) {
+                this.spawnAnimal(animal.config);
+            }
         });
 
         // Shop events
@@ -93,6 +123,9 @@ export class GameScene extends Phaser.Scene {
                 () => this.getAnimals(),
             );
         }
+
+        // Spawn helper pets
+        this.spawnHelperPets();
     }
 
     update(_time: number, _delta: number): void {
@@ -127,7 +160,11 @@ export class GameScene extends Phaser.Scene {
         const animal = new Animal(this, x, y, config);
 
         animal.on('dropCoin', (data: { x: number; y: number; value: number }) => {
-            this.spawnCoin(data.x, data.y, data.value);
+            let value = data.value;
+            if (this.coinBoostFn) {
+                value = Math.round(value * this.coinBoostFn(data.x, data.y));
+            }
+            this.spawnCoin(data.x, data.y, value);
         });
 
         animal.on('died', () => {
@@ -145,6 +182,53 @@ export class GameScene extends Phaser.Scene {
     private spawnStarterAnimals(): void {
         for (let i = 0; i < 2; i++) {
             this.spawnAnimal(ANIMAL_DATA.gecko);
+        }
+    }
+
+    private spawnHelperPets(): void {
+        const helperManager = new HelperManager(this.game);
+        const ownedConfigs = helperManager.getOwnedConfigs();
+
+        for (const config of ownedConfigs) {
+            const pet = new HelperPet(this, config);
+            this.helperPetGroup.add(pet);
+
+            switch (config.key) {
+                case 'tortoise':
+                    applyTortoiseBehavior(this, pet, this.foods);
+                    break;
+                case 'hermit_crab':
+                    applyHermitCrabBehavior(this, pet, this.coinGroup);
+                    break;
+                case 'mantis':
+                    if (this.poacherAI) {
+                        this.poacherAI.setAutoDamageInterval(config.effectParams.damageInterval ?? 1000);
+                    }
+                    break;
+                case 'snail': {
+                    const snailEffect = applySnailBehavior(this, pet);
+                    this.coinBoostFn = snailEffect.getBoost;
+                    break;
+                }
+                case 'beetle': {
+                    const beetleEffect = applyBeetleBehavior(this, pet);
+                    this.nutritionMultiplierFn = beetleEffect.getNutritionMultiplier;
+                    break;
+                }
+                case 'scorpion':
+                    if (this.poacherAI) {
+                        this.poacherAI.setSpeedMultiplier(config.effectParams.slowFactor ?? 0.7);
+                    }
+                    break;
+                case 'snake': {
+                    const snakeEffect = applySnakeBehavior(this, pet);
+                    this.breedCheckFn = snakeEffect.shouldBreed;
+                    break;
+                }
+                case 'millipede':
+                    applyMillipedeBehavior(this, pet, (x, y, v) => this.spawnCoin(x, y, v));
+                    break;
+            }
         }
     }
 
