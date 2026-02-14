@@ -11,11 +11,33 @@ Importable:
 """
 
 import argparse
+import base64
 import json
+import mimetypes
 import os
 import requests
 import sys
 import time
+
+
+def _resolve_input_images(input_images):
+    """Convert local file paths to data URIs so the remote server can read them.
+
+    Items that are already data URIs or base64 strings are passed through unchanged.
+    """
+    if not input_images:
+        return input_images
+    resolved = []
+    for img in input_images:
+        if img.startswith("data:") or not os.path.isfile(img):
+            # Already a data URI or base64 string, or not a local file — pass through
+            resolved.append(img)
+        else:
+            mime = mimetypes.guess_type(img)[0] or "image/png"
+            with open(img, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
+            resolved.append(f"data:{mime};base64,{b64}")
+    return resolved
 
 
 def generate_image(
@@ -74,7 +96,7 @@ def generate_image(
     if seed is not None:
         payload["seed"] = seed
     if input_images:
-        payload["input_images"] = input_images
+        payload["input_images"] = _resolve_input_images(input_images)
 
     resp = requests.post(f"{server_url}/generate", json=payload)
     resp.raise_for_status()
