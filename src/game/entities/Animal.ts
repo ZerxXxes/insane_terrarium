@@ -21,6 +21,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
     private coinDropTimer!: Phaser.Time.TimerEvent;
     private thoughtBubble: ThoughtBubble;
     private seekingFood: Phaser.GameObjects.Sprite | null = null;
+    private shadow: Phaser.GameObjects.Ellipse;
 
     constructor(scene: Phaser.Scene, x: number, y: number, animalConfig: AnimalConfig) {
         super(scene, x, y, animalConfig.spriteKey);
@@ -43,6 +44,12 @@ export class Animal extends Phaser.GameObjects.Sprite {
             callbackScope: this,
             loop: true,
         });
+
+        // Shadow beneath animal
+        const shadowWidth = this.displayWidth * 0.7;
+        const shadowHeight = this.displayWidth * 0.25;
+        this.shadow = scene.add.ellipse(x, y + this.displayHeight / 2, shadowWidth, shadowHeight, 0x000000, 0.3);
+        this.shadow.setDepth(9);
 
         // Thought bubble
         this.thoughtBubble = new ThoughtBubble(scene, this.displayHeight);
@@ -77,6 +84,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
             this.seekingFood = null;
         }
         this.thoughtBubble.updatePosition(this.x, this.y, delta);
+        this.shadow.setPosition(this.x, this.y + this.displayHeight / 2);
 
         // Movement: seek food if hungry, otherwise wander
         if (this.isHungry && this.seekingFood && this.seekingFood.active) {
@@ -129,7 +137,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
         }
 
         this.scene.tweens.add({
-            targets: this,
+            targets: [this, this.shadow],
             alpha: 0,
             duration: 800,
             onComplete: () => {
@@ -206,6 +214,9 @@ export class Animal extends Phaser.GameObjects.Sprite {
         this.coinDropTimer?.destroy();
         if (this.thoughtBubble?.active) {
             this.thoughtBubble.destroy();
+        }
+        if (this.shadow?.active) {
+            this.shadow.destroy();
         }
         super.destroy(fromScene);
     }
