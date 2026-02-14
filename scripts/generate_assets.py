@@ -106,6 +106,19 @@ assets = [
         "prompt": {"asset_type": "ui_component", "element": "shop button frame", "style": "pixel art, 2D game UI, retro aesthetic", "shape": "square button, wooden frame with stone inset", "background": "dark interior", "details": "rustic terrarium themed, ornate but simple"},
         "path": "public/assets/ui/shop_button.png", "w": 512, "h": 512, "seed": 700,
     },
+    # Backgrounds (2048x1536 hi-res)
+    {
+        "prompt": {"subject": "glass terrarium interior view, wide landscape", "style": "pixel art, 2D game background, retro aesthetic, warm lighting", "scene": "brown substrate floor with scattered small rocks, lush green tropical plants along the sides, small water dish, piece of driftwood", "background": "glass terrarium walls visible, warm golden lighting from above", "details": "cozy tropical terrarium environment, suitable as game background, no animals, detailed ground texture"},
+        "path": "public/assets/backgrounds/terrarium_tropical.png", "w": 2048, "h": 1536, "seed": 1001,
+    },
+    {
+        "prompt": {"subject": "glass terrarium interior view, wide landscape, desert theme", "style": "pixel art, 2D game background, retro aesthetic, warm orange lighting", "scene": "sandy substrate floor, small cacti and succulents, red and orange rocks, dry twisted driftwood, sand dunes", "background": "glass terrarium walls visible, warm orange desert lighting from above", "details": "arid desert terrarium environment, suitable as game background, no animals, detailed sand texture"},
+        "path": "public/assets/backgrounds/terrarium_desert.png", "w": 2048, "h": 1536, "seed": 1002,
+    },
+    {
+        "prompt": {"subject": "glass terrarium interior view, wide landscape, rainforest theme", "style": "pixel art, 2D game background, retro aesthetic, misty blue-green lighting", "scene": "dark rich soil substrate, dense ferns and hanging moss, small waterfall stream, wet rocks, mushrooms on log", "background": "glass terrarium walls visible, cool blue-green misty lighting from above", "details": "lush humid rainforest terrarium environment, suitable as game background, no animals, detailed mossy ground texture"},
+        "path": "public/assets/backgrounds/terrarium_rainforest.png", "w": 2048, "h": 1536, "seed": 1003,
+    },
 ]
 
 if __name__ == "__main__":

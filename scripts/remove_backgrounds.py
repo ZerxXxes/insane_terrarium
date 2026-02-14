@@ -67,8 +67,8 @@ if __name__ == "__main__":
             if fname.endswith(".png"):
                 files.append(os.path.join(dirpath, fname))
 
-    # Skip the background image - it should keep its black areas
-    files = [f for f in files if "terrarium_bg" not in os.path.basename(f)]
+    # Skip background images - they should keep their dark areas
+    files = [f for f in files if not os.path.basename(f).startswith("terrarium_")]
 
     print(f"Processing {len(files)} sprites...")
     for i, filepath in enumerate(files, 1):

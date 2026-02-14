@@ -30,8 +30,10 @@ export class PreloadScene extends Phaser.Scene {
             loadingText.setText(`Loading... ${Math.round(value * 100)}%`);
         });
 
-        // Background
-        this.load.image('terrarium_bg', 'assets/backgrounds/terrarium_bg.png');
+        // Backgrounds (hi-res 2048x1536)
+        this.load.image('terrarium_tropical', 'assets/backgrounds/terrarium_tropical.png');
+        this.load.image('terrarium_desert', 'assets/backgrounds/terrarium_desert.png');
+        this.load.image('terrarium_rainforest', 'assets/backgrounds/terrarium_rainforest.png');
 
         // Animals
         this.load.image('animal_gecko', 'assets/sprites/animal_gecko.png');

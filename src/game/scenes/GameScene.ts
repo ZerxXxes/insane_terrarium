@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_WIDTH, SUBSTRATE_TOP, SUBSTRATE_BOTTOM } from '../config/GameConfig';
+import { GAME_WIDTH, GAME_HEIGHT, SUBSTRATE_TOP, SUBSTRATE_BOTTOM } from '../config/GameConfig';
 import { ANIMAL_DATA, AnimalConfig } from '../config/AnimalData';
 import { FOOD_DATA } from '../config/FoodData';
 import { getLevelConfig } from '../config/LevelData';
@@ -22,6 +22,7 @@ import { HUD } from '../ui/HUD';
 import { ShopBar } from '../ui/ShopBar';
 import { PoacherAI } from '../systems/PoacherAI';
 import { Tutorial } from '../ui/Tutorial';
+import { getBackgroundKey } from '../ui/OptionsPanel';
 
 export class GameScene extends Phaser.Scene {
     level: number = 1;
@@ -62,7 +63,8 @@ export class GameScene extends Phaser.Scene {
         this.levelManager = new LevelManager(this, this.economy, this.level);
 
         // Background
-        this.add.image(GAME_WIDTH / 2, this.scale.height / 2, 'terrarium_bg');
+        this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, getBackgroundKey())
+            .setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
 
         // Groups
         this.animals = this.add.group({ runChildUpdate: true });
