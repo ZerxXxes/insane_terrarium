@@ -1,21 +1,27 @@
 import Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT, SHOP_BAR_HEIGHT, SUBSTRATE_TOP, SUBSTRATE_BOTTOM } from '../config/GameConfig';
+import { GAME_WIDTH, SUBSTRATE_TOP, SUBSTRATE_BOTTOM } from '../config/GameConfig';
 import { ANIMAL_DATA, AnimalConfig } from '../config/AnimalData';
 import { FOOD_DATA } from '../config/FoodData';
 import { getLevelConfig } from '../config/LevelData';
 import { Animal } from '../entities/Animal';
 import { Food } from '../entities/Food';
 import { Coin } from '../entities/Coin';
+import { EconomyManager } from '../managers/EconomyManager';
+import { LevelManager } from '../managers/LevelManager';
+import { HUD } from '../ui/HUD';
+import { ShopBar } from '../ui/ShopBar';
+import { PoacherAI } from '../systems/PoacherAI';
 
 export class GameScene extends Phaser.Scene {
     level: number = 1;
-    coins: number = 0;
     selectedFoodType: string = 'cricket';
 
     private animals!: Phaser.GameObjects.Group;
     private foods!: Phaser.GameObjects.Group;
     private coinGroup!: Phaser.GameObjects.Group;
-    private coinText!: Phaser.GameObjects.Text;
+    private economy!: EconomyManager;
+    private levelManager!: LevelManager;
+    poacherAI: PoacherAI | null = null;
 
     constructor() {
         super('GameScene');
@@ -23,47 +29,37 @@ export class GameScene extends Phaser.Scene {
 
     init(data: { level?: number }): void {
         this.level = data.level ?? 1;
-        const levelConfig = getLevelConfig(this.level);
-        this.coins = levelConfig.startCoins;
         this.selectedFoodType = 'cricket';
     }
 
     create(): void {
+        const levelConfig = getLevelConfig(this.level);
+
+        // Economy
+        this.economy = new EconomyManager(levelConfig.startCoins);
+
+        // Level manager
+        this.levelManager = new LevelManager(this, this.economy, this.level);
+
         // Background
-        this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'terrarium_bg');
+        this.add.image(GAME_WIDTH / 2, this.scale.height / 2, 'terrarium_bg');
 
         // Groups
         this.animals = this.add.group({ runChildUpdate: true });
         this.foods = this.add.group({ runChildUpdate: true });
         this.coinGroup = this.add.group({ runChildUpdate: true });
 
-        // Level indicator
-        this.add.text(GAME_WIDTH / 2, 20, `Level ${this.level}`, {
-            fontSize: '24px',
-            color: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 2,
-        }).setOrigin(0.5, 0).setDepth(100);
+        // HUD
+        new HUD(this, this.economy, this.level);
 
-        // Coin counter (temporary HUD — will be replaced by proper HUD in Phase 3)
-        const coinIcon = this.add.image(40, 20, 'coin').setDepth(100).setScale(1.2);
-        this.coinText = this.add.text(58, 12, `${this.coins}`, {
-            fontSize: '22px',
-            color: '#fbbf24',
-            fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        }).setDepth(100);
-
-        // Shop bar placeholder
-        this.add.image(GAME_WIDTH / 2, GAME_HEIGHT - SHOP_BAR_HEIGHT / 2, 'shop_bar_bg').setDepth(90);
+        // Shop bar
+        new ShopBar(this, this.economy, this.level);
 
         // Spawn starting animals
         this.spawnStarterAnimals();
 
-        // Click to drop food
+        // Click to drop food (but not on interactive shop items)
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-            // Only drop food in the substrate area (not on shop bar)
             if (pointer.y >= SUBSTRATE_TOP && pointer.y <= SUBSTRATE_BOTTOM) {
                 this.dropFood(pointer.x, pointer.y);
             }
@@ -78,12 +74,28 @@ export class GameScene extends Phaser.Scene {
             animal.feed(food.nutrition);
             food.destroy();
         });
+
+        // Shop events
+        this.events.on('buyAnimal', (key: string) => {
+            const config = ANIMAL_DATA[key];
+            if (config) this.spawnAnimal(config);
+        });
+
+        this.events.on('selectFood', (key: string) => {
+            this.selectedFoodType = key;
+        });
+
+        // Poacher AI (level 2+)
+        if (levelConfig.poacherConfig) {
+            this.poacherAI = new PoacherAI(
+                this,
+                levelConfig.poacherConfig,
+                () => this.getAnimals(),
+            );
+        }
     }
 
-    update(time: number, delta: number): void {
-        // Update coin display
-        this.coinText.setText(`${this.coins}`);
-
+    update(_time: number, _delta: number): void {
         // Make hungry animals seek nearby food
         const animals = this.animals.getChildren() as Animal[];
         const foods = this.foods.getChildren() as Food[];
@@ -105,20 +117,8 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
-        // Check game over: no animals and can't afford cheapest
-        if (this.animals.countActive() === 0) {
-            const cheapest = this.getCheapestAnimalCost();
-            if (this.coins < cheapest) {
-                this.scene.start('GameOverScene');
-            }
-        }
-    }
-
-    private spawnStarterAnimals(): void {
-        // Start with 2 geckos
-        for (let i = 0; i < 2; i++) {
-            this.spawnAnimal(ANIMAL_DATA.gecko);
-        }
+        // Check game over
+        this.levelManager.checkGameOver(this.animals.countActive());
     }
 
     spawnAnimal(config: AnimalConfig): Animal {
@@ -138,14 +138,22 @@ export class GameScene extends Phaser.Scene {
         return animal;
     }
 
+    getAnimals(): Animal[] {
+        return this.animals.getChildren().filter(a => (a as Animal).isAlive) as Animal[];
+    }
+
+    private spawnStarterAnimals(): void {
+        for (let i = 0; i < 2; i++) {
+            this.spawnAnimal(ANIMAL_DATA.gecko);
+        }
+    }
+
     private dropFood(x: number, y: number): void {
         const foodConfig = FOOD_DATA[this.selectedFoodType];
         if (!foodConfig) return;
 
-        // Deduct cost (free for crickets)
         if (foodConfig.cost > 0) {
-            if (this.coins < foodConfig.cost) return;
-            this.coins -= foodConfig.cost;
+            if (!this.economy.spendCoins(foodConfig.cost)) return;
         }
 
         const food = new Food(this, x, y, foodConfig);
@@ -155,18 +163,8 @@ export class GameScene extends Phaser.Scene {
     private spawnCoin(x: number, y: number, value: number): void {
         const coin = new Coin(this, x, y, value);
         coin.on('collected', (data: { value: number }) => {
-            this.coins += data.value;
+            this.economy.addCoins(data.value);
         });
         this.coinGroup.add(coin);
-    }
-
-    private getCheapestAnimalCost(): number {
-        let cheapest = Infinity;
-        for (const animal of Object.values(ANIMAL_DATA)) {
-            if (animal.unlockLevel <= this.level && animal.cost < cheapest) {
-                cheapest = animal.cost;
-            }
-        }
-        return cheapest;
     }
 }
