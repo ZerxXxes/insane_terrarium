@@ -4,6 +4,8 @@ import { SUBSTRATE_TOP, SUBSTRATE_BOTTOM, GAME_WIDTH } from '../config/GameConfi
 import { ThoughtBubble } from './ThoughtBubble';
 
 const HUNGER_THRESHOLD = 0.3; // show thought bubble below 30%
+const COIN_JITTER = 0.3; // +-30% random offset on coin drop interval
+const HUNGER_JITTER = 0.15; // +-15% random offset on hunger rate
 const WANDER_SPEED_MIN = 50;
 const WANDER_SPEED_MAX = 80;
 const WANDER_PAUSE_MIN = 1000;
@@ -22,6 +24,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
     private thoughtBubble: ThoughtBubble;
     private seekingFood: Phaser.GameObjects.Sprite | null = null;
     private shadow: Phaser.GameObjects.Ellipse;
+    private hungerJitter: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, animalConfig: AnimalConfig) {
         super(scene, x, y, animalConfig.spriteKey);
@@ -37,13 +40,11 @@ export class Animal extends Phaser.GameObjects.Sprite {
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setCollideWorldBounds(false);
 
-        // Coin drop timer — only fires when alive and not hungry
-        this.coinDropTimer = scene.time.addEvent({
-            delay: animalConfig.coinDropInterval,
-            callback: this.tryDropCoin,
-            callbackScope: this,
-            loop: true,
-        });
+        // Coin drop timer with random jitter
+        this.scheduleCoinDrop();
+
+        // Per-animal hunger jitter (fixed at spawn so each animal feels slightly different)
+        this.hungerJitter = 1 + (Math.random() * 2 - 1) * HUNGER_JITTER;
 
         // Shadow beneath animal
         const shadowWidth = this.displayWidth * 0.7;
@@ -68,8 +69,8 @@ export class Animal extends Phaser.GameObjects.Sprite {
     update(_time: number, delta: number): void {
         if (!this.isAlive) return;
 
-        // Deplete hunger
-        this.hunger -= this.config.hungerRate * (delta / 1000);
+        // Deplete hunger (jittered per-animal)
+        this.hunger -= this.config.hungerRate * this.hungerJitter * (delta / 1000);
         if (this.hunger <= 0) {
             this.hunger = 0;
             this.die();
@@ -143,6 +144,15 @@ export class Animal extends Phaser.GameObjects.Sprite {
             onComplete: () => {
                 this.destroy();
             },
+        });
+    }
+
+    private scheduleCoinDrop(): void {
+        const jitter = 1 + (Math.random() * 2 - 1) * COIN_JITTER;
+        const delay = this.config.coinDropInterval * jitter;
+        this.coinDropTimer = this.scene.time.delayedCall(delay, () => {
+            this.tryDropCoin();
+            if (this.isAlive) this.scheduleCoinDrop();
         });
     }
 
