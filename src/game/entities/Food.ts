@@ -22,6 +22,7 @@ export class Food extends Phaser.GameObjects.Sprite {
         scene.physics.add.existing(this);
 
         this.setDepth(5);
+        this.setScale(0.04); // 512px -> ~20px in-game
 
         // Fall to substrate level
         const targetY = Math.min(y, SUBSTRATE_BOTTOM - 16);

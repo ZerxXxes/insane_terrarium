@@ -23,7 +23,7 @@ export class HUD {
     }
 
     private createCoinCounter(): void {
-        this.scene.add.image(30, 20, 'coin').setDepth(100).setScale(1.2);
+        this.scene.add.image(30, 20, 'coin').setDepth(100).setScale(0.05);
         this.coinText = this.scene.add.text(48, 12, `${this.economy.coins}`, {
             fontSize: '22px',
             color: '#fbbf24',
@@ -40,7 +40,7 @@ export class HUD {
                 startX + i * 30,
                 20,
                 this.economy.eggPiecesBought[i] ? 'egg_piece' : 'egg_piece_empty'
-            ).setDepth(100).setScale(0.9);
+            ).setDepth(100).setScale(0.05);
             this.eggSlots.push(slot);
         }
     }
@@ -64,8 +64,8 @@ export class HUD {
             // Pulse animation
             this.scene.tweens.add({
                 targets: this.eggSlots[index],
-                scaleX: 1.3,
-                scaleY: 1.3,
+                scaleX: 0.07,
+                scaleY: 0.07,
                 yoyo: true,
                 duration: 200,
             });

@@ -53,7 +53,7 @@ export class ShopScene extends Phaser.Scene {
             const y = GAME_HEIGHT / 2 - 20;
 
             // Pet sprite
-            this.add.image(x, y - 60, petConfig.spriteKey).setScale(2.5);
+            this.add.image(x, y - 60, petConfig.spriteKey).setScale(0.2);
 
             // Name
             this.add.text(x, y + 10, petConfig.name, {

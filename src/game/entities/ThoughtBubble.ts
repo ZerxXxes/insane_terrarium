@@ -9,8 +9,8 @@ export class ThoughtBubble extends Phaser.GameObjects.Container {
 
         this.baseOffsetY = -(parentHeight / 2 + 24);
 
-        const bubble = scene.add.image(0, 0, 'thought_bubble').setScale(0.8);
-        const icon = scene.add.image(0, 0, 'food_cricket').setScale(0.6);
+        const bubble = scene.add.image(0, 0, 'thought_bubble').setScale(0.06);
+        const icon = scene.add.image(0, 0, 'food_cricket').setScale(0.03);
 
         this.add([bubble, icon]);
         this.setVisible(false);

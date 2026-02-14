@@ -17,6 +17,7 @@ export class Coin extends Phaser.GameObjects.Sprite {
 
         scene.add.existing(this);
         this.setDepth(15);
+        this.setScale(0.04); // 512px -> ~20px in-game
         this.setInteractive({ useHandCursor: true });
 
         // Float up animation

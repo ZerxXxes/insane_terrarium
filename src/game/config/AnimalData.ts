@@ -22,7 +22,7 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         maxHunger: 100,
         unlockLevel: 1,
         spriteKey: 'animal_gecko',
-        spriteScale: 1,
+        spriteScale: 0.1,
     },
     frog: {
         key: 'frog',
@@ -34,7 +34,7 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         maxHunger: 100,
         unlockLevel: 1,
         spriteKey: 'animal_frog',
-        spriteScale: 1,
+        spriteScale: 0.1,
     },
     chameleon: {
         key: 'chameleon',
@@ -46,7 +46,7 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         maxHunger: 100,
         unlockLevel: 2,
         spriteKey: 'animal_chameleon',
-        spriteScale: 1,
+        spriteScale: 0.12,
     },
     salamander: {
         key: 'salamander',
@@ -58,7 +58,7 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         maxHunger: 100,
         unlockLevel: 3,
         spriteKey: 'animal_salamander',
-        spriteScale: 1,
+        spriteScale: 0.12,
     },
     dragon: {
         key: 'dragon',
@@ -70,6 +70,6 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         maxHunger: 100,
         unlockLevel: 4,
         spriteKey: 'animal_dragon',
-        spriteScale: 1,
+        spriteScale: 0.15,
     },
 };

@@ -26,6 +26,7 @@ export class Poacher extends Phaser.GameObjects.Sprite {
 
         scene.add.existing(this);
         this.setDepth(40);
+        this.setScale(0.15); // 512x768 -> ~77x115px in-game
         this.setInteractive({ useHandCursor: true });
 
         // Health bar above

@@ -23,6 +23,7 @@ export class HelperPet extends Phaser.GameObjects.Sprite {
 
         this.petConfig = config;
         this.setDepth(12);
+        this.setScale(0.08); // 512px -> ~40px in-game
 
         scene.add.existing(this);
         scene.physics.add.existing(this);

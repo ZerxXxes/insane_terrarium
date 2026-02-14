@@ -22,10 +22,10 @@ export class ShopItem extends Phaser.GameObjects.Container {
         this.price = config.price;
 
         // Button background
-        this.bg = scene.add.image(0, 0, 'shop_button').setScale(1.1);
+        this.bg = scene.add.image(0, 0, 'shop_button').setScale(0.13);
 
         // Item sprite
-        const sprite = scene.add.image(0, -8, config.spriteKey).setScale(0.8);
+        const sprite = scene.add.image(0, -8, config.spriteKey).setScale(0.07);
 
         // Price text
         this.priceText = scene.add.text(0, 24, `${config.price}`, {
