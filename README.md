@@ -3,7 +3,9 @@
 A 2D browser game inspired by the classic Insaniquarium — but with reptiles, amphibians, and a terrarium twist. Feed your animals, collect coins, fend off poachers, and hatch eggs to advance through 5 increasingly challenging levels.
 
 <p align="center">
-  <img src="public/assets/backgrounds/terrarium_bg.png" alt="Terrarium Background" width="600">
+  <img src="public/assets/backgrounds/terrarium_tropical.png" alt="Tropical Terrarium" width="400">
+  <img src="public/assets/backgrounds/terrarium_desert.png" alt="Desert Terrarium" width="400">
+  <img src="public/assets/backgrounds/terrarium_rainforest.png" alt="Rainforest Terrarium" width="400">
 </p>
 
 ## Gameplay

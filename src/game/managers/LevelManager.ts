@@ -27,6 +27,12 @@ export class LevelManager {
         return this.config;
     }
 
+    forceWin(): void {
+        if (this.winTriggered) return;
+        this.winTriggered = true;
+        this.scene.scene.start('WinScene', { level: this.level });
+    }
+
     checkWin(): void {
         if (this.winTriggered) return;
         if (this.economy.allEggsBought) {

@@ -144,6 +144,26 @@ export class GameScene extends Phaser.Scene {
         if (this.level === 1) {
             new Tutorial(this);
         }
+
+        // Cheat code: "iddqd" auto-wins the level
+        this.setupCheatCodes();
+    }
+
+    private setupCheatCodes(): void {
+        const code = 'iddqd';
+        let progress = 0;
+
+        this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
+            if (event.key === code[progress]) {
+                progress++;
+                if (progress === code.length) {
+                    progress = 0;
+                    this.levelManager.forceWin();
+                }
+            } else {
+                progress = event.key === code[0] ? 1 : 0;
+            }
+        });
     }
 
     update(_time: number, _delta: number): void {
