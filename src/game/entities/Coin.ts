@@ -5,12 +5,33 @@ const FLOAT_HEIGHT = 30;
 const COIN_LIFETIME = 15000; // 15 seconds
 const FADE_WARNING_AT = 12000; // start fading at 12s
 
+type CoinTier = 'bronze' | 'silver' | 'gold';
+
+function getCoinTier(value: number): CoinTier {
+    if (value <= 30) return 'bronze';
+    if (value <= 100) return 'silver';
+    return 'gold';
+}
+
+function getCoinSpriteKey(tier: CoinTier): string {
+    if (tier === 'bronze') return 'coin_bronze';
+    if (tier === 'silver') return 'coin_silver';
+    return 'coin';
+}
+
+function getCoinAnimKey(tier: CoinTier): string {
+    if (tier === 'bronze') return 'coin_bronze_spin';
+    if (tier === 'silver') return 'coin_silver_spin';
+    return 'coin_spin';
+}
+
 export class Coin extends Phaser.GameObjects.Sprite {
     value: number;
     private spawnTime: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, value: number) {
-        super(scene, x, y, 'coin');
+        const tier = getCoinTier(value);
+        super(scene, x, y, getCoinSpriteKey(tier));
 
         this.value = value;
         this.spawnTime = scene.time.now;
@@ -33,8 +54,9 @@ export class Coin extends Phaser.GameObjects.Sprite {
         });
 
         // Play spin animation
-        if (scene.anims.exists('coin_spin')) {
-            this.play('coin_spin');
+        const animKey = getCoinAnimKey(tier);
+        if (scene.anims.exists(animKey)) {
+            this.play(animKey);
         }
 
         // Click to collect

@@ -46,6 +46,10 @@ export class ThoughtBubble extends Phaser.GameObjects.Container {
         }
     }
 
+    updateParentHeight(parentHeight: number): void {
+        this.baseOffsetY = -(parentHeight / 2 + 24);
+    }
+
     updatePosition(parentX: number, parentY: number, delta: number): void {
         if (!this.visible) return;
 

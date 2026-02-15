@@ -11,7 +11,8 @@ A 2D browser game inspired by the classic Insaniquarium — but with reptiles, a
 ## Gameplay
 
 - **Feed** your animals by clicking anywhere in the terrarium to drop bugs
-- **Collect coins** that well-fed animals drop
+- **Raise babies** — new animals start as babies that only eat; feed them enough times and they grow into coin-producing adults
+- **Collect coins** that well-fed adult animals drop — bronze, silver, or gold based on value
 - **Buy** new animals and food upgrades from the shop
 - **Defend** against poachers trying to steal your animals (Level 2+)
 - **Complete levels** by purchasing all 3 egg pieces
@@ -19,23 +20,32 @@ A 2D browser game inspired by the classic Insaniquarium — but with reptiles, a
 
 ## Animals
 
-Collect and raise 5 unique reptiles and amphibians, each with different coin values and unlock levels:
+Collect and raise 5 unique reptiles and amphibians. Each starts as a baby that must be fed before growing into a coin-producing adult:
 
 <p align="center">
+  <img src="public/assets/sprites/baby_gecko.png" alt="Baby Gecko" width="60">
   <img src="public/assets/sprites/animal_gecko.png" alt="Small Gecko" width="100">
+  &nbsp;&nbsp;
+  <img src="public/assets/sprites/baby_frog.png" alt="Baby Frog" width="60">
   <img src="public/assets/sprites/animal_frog.png" alt="Tree Frog" width="100">
+  &nbsp;&nbsp;
+  <img src="public/assets/sprites/baby_chameleon.png" alt="Baby Chameleon" width="60">
   <img src="public/assets/sprites/animal_chameleon.png" alt="Chameleon" width="100">
+  &nbsp;&nbsp;
+  <img src="public/assets/sprites/baby_salamander.png" alt="Baby Salamander" width="60">
   <img src="public/assets/sprites/animal_salamander.png" alt="Salamander" width="100">
+  &nbsp;&nbsp;
+  <img src="public/assets/sprites/baby_dragon.png" alt="Baby Dragon" width="60">
   <img src="public/assets/sprites/animal_dragon.png" alt="Bearded Dragon" width="100">
 </p>
 
-| Animal | Cost | Coin Drop | Unlock |
-|--------|------|-----------|--------|
-| Small Gecko | 100 | 15 every 8s | Level 1 |
-| Tree Frog | 200 | 30 every 10s | Level 1 |
-| Chameleon | 500 | 80 every 15s | Level 2 |
-| Salamander | 750 | 100 every 12s | Level 3 |
-| Bearded Dragon | 1500 | 250 every 18s | Level 4 |
+| Animal | Cost | Coin Drop | Coin Tier | Feeds to Grow | Unlock |
+|--------|------|-----------|-----------|---------------|--------|
+| Small Gecko | 100 | 15 every 8s | Bronze | 3 | Level 1 |
+| Tree Frog | 200 | 30 every 10s | Bronze | 3 | Level 1 |
+| Chameleon | 500 | 80 every 15s | Silver | 4 | Level 2 |
+| Salamander | 750 | 100 every 12s | Silver | 4 | Level 3 |
+| Bearded Dragon | 1500 | 250 every 18s | Gold | 5 | Level 4 |
 
 ## Helper Pets
 
@@ -66,7 +76,9 @@ Between levels, choose from 8 helper pets that provide passive bonuses throughou
 ## Items
 
 <p align="center">
-  <img src="public/assets/sprites/coin.png" alt="Coin" width="64">
+  <img src="public/assets/sprites/coin_bronze.png" alt="Bronze Coin" width="64">
+  <img src="public/assets/sprites/coin_silver.png" alt="Silver Coin" width="64">
+  <img src="public/assets/sprites/coin.png" alt="Gold Coin" width="64">
   &nbsp;&nbsp;
   <img src="public/assets/sprites/food_cricket.png" alt="Cricket" width="64">
   &nbsp;&nbsp;
@@ -75,7 +87,7 @@ Between levels, choose from 8 helper pets that provide passive bonuses throughou
   <img src="public/assets/sprites/poacher_hand.png" alt="Poacher" width="48">
 </p>
 
-- **Coins** — Dropped by happy animals. Click to collect!
+- **Coins** — Dropped by happy adult animals. Bronze, silver, or gold based on value. Click to collect!
 - **Food** — Crickets (free), Mealworms (5 coins), Dubia Roaches (15 coins)
 - **Egg Pieces** — Buy all 3 to complete each level
 - **Poacher** — Click rapidly to fend off! Appears from Level 2 onward

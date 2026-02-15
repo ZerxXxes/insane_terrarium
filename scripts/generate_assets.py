@@ -31,6 +31,79 @@ assets = [
         "prompt": {"subject": "bearded dragon lizard", "style": STYLE, "pose": "side view, facing right, standing proud", "appearance": "large tan and orange body, spiky beard, stocky build, desert lizard", "background": BG, "details": "game-ready sprite"},
         "path": "public/assets/sprites/animal_dragon.png", "w": 512, "h": 512, "seed": 204,
     },
+    # Animal walk frames
+    {
+        "prompt": {"subject": "small bright green gecko lizard walking", "style": STYLE, "pose": "side view, facing right, walking, one leg forward", "appearance": "bright green body, large friendly eyes, walking pose variation", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/animal_gecko_walk.png", "w": 512, "h": 512, "seed": 210,
+    },
+    {
+        "prompt": {"subject": "red-eyed tree frog hopping", "style": STYLE, "pose": "side view, facing right, mid-hop", "appearance": "bright green body, red eyes, orange feet, hopping pose", "background": BG, "details": "game-ready sprite, hopping pose"},
+        "path": "public/assets/sprites/animal_frog_walk.png", "w": 512, "h": 512, "seed": 211,
+    },
+    {
+        "prompt": {"subject": "chameleon lizard walking", "style": STYLE, "pose": "side view, facing right, walking on branch", "appearance": "green and teal body, coiled tail, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/animal_chameleon_walk.png", "w": 512, "h": 512, "seed": 212,
+    },
+    {
+        "prompt": {"subject": "fire salamander walking", "style": STYLE, "pose": "side view, facing right, walking, legs forward", "appearance": "black body with bright yellow spots, walking pose variation", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/animal_salamander_walk.png", "w": 512, "h": 512, "seed": 213,
+    },
+    {
+        "prompt": {"subject": "bearded dragon lizard walking", "style": STYLE, "pose": "side view, facing right, walking, one leg forward", "appearance": "large tan and orange body, spiky beard, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/animal_dragon_walk.png", "w": 512, "h": 512, "seed": 214,
+    },
+    # Baby animals (idle)
+    {
+        "prompt": {"subject": "baby gecko lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby bright green gecko, oversized head, large cute eyes, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
+        "path": "public/assets/sprites/baby_gecko.png", "w": 512, "h": 512, "seed": 220,
+        "input_images": ["public/assets/sprites/animal_gecko.png"],
+    },
+    {
+        "prompt": {"subject": "baby tree frog", "style": STYLE, "pose": "side view, facing right, sitting", "appearance": "tiny baby red-eyed tree frog, oversized head, huge cute red eyes, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
+        "path": "public/assets/sprites/baby_frog.png", "w": 512, "h": 512, "seed": 222,
+        "input_images": ["public/assets/sprites/animal_frog.png"],
+    },
+    {
+        "prompt": {"subject": "baby chameleon lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby chameleon, oversized head, huge bulging cute eyes, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
+        "path": "public/assets/sprites/baby_chameleon.png", "w": 512, "h": 512, "seed": 224,
+        "input_images": ["public/assets/sprites/animal_chameleon.png"],
+    },
+    {
+        "prompt": {"subject": "baby fire salamander", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby fire salamander, oversized head, large cute eyes, black with yellow spots, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
+        "path": "public/assets/sprites/baby_salamander.png", "w": 512, "h": 512, "seed": 226,
+        "input_images": ["public/assets/sprites/animal_salamander.png"],
+    },
+    {
+        "prompt": {"subject": "baby bearded dragon lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby bearded dragon, oversized head, large cute eyes, tan and orange, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
+        "path": "public/assets/sprites/baby_dragon.png", "w": 512, "h": 512, "seed": 228,
+        "input_images": ["public/assets/sprites/animal_dragon.png"],
+    },
+    # Baby animals (walk)
+    {
+        "prompt": {"subject": "baby gecko lizard walking", "style": STYLE, "pose": "side view, facing right, walking", "appearance": "tiny baby bright green gecko, oversized head, large cute eyes, walking pose", "background": BG, "details": "game-ready sprite, baby animal walking"},
+        "path": "public/assets/sprites/baby_gecko_walk.png", "w": 512, "h": 512, "seed": 221,
+        "input_images": ["public/assets/sprites/animal_gecko_walk.png"],
+    },
+    {
+        "prompt": {"subject": "baby tree frog hopping", "style": STYLE, "pose": "side view, facing right, hopping", "appearance": "tiny baby red-eyed tree frog, oversized head, huge cute red eyes, hopping pose", "background": BG, "details": "game-ready sprite, baby animal hopping"},
+        "path": "public/assets/sprites/baby_frog_walk.png", "w": 512, "h": 512, "seed": 223,
+        "input_images": ["public/assets/sprites/animal_frog_walk.png"],
+    },
+    {
+        "prompt": {"subject": "baby chameleon lizard walking", "style": STYLE, "pose": "side view, facing right, walking", "appearance": "tiny baby chameleon, oversized head, huge bulging cute eyes, walking pose", "background": BG, "details": "game-ready sprite, baby animal walking"},
+        "path": "public/assets/sprites/baby_chameleon_walk.png", "w": 512, "h": 512, "seed": 225,
+        "input_images": ["public/assets/sprites/animal_chameleon_walk.png"],
+    },
+    {
+        "prompt": {"subject": "baby fire salamander walking", "style": STYLE, "pose": "side view, facing right, walking", "appearance": "tiny baby fire salamander, oversized head, large cute eyes, walking pose", "background": BG, "details": "game-ready sprite, baby animal walking"},
+        "path": "public/assets/sprites/baby_salamander_walk.png", "w": 512, "h": 512, "seed": 227,
+        "input_images": ["public/assets/sprites/animal_salamander_walk.png"],
+    },
+    {
+        "prompt": {"subject": "baby bearded dragon lizard walking", "style": STYLE, "pose": "side view, facing right, walking", "appearance": "tiny baby bearded dragon, oversized head, large cute eyes, walking pose", "background": BG, "details": "game-ready sprite, baby animal walking"},
+        "path": "public/assets/sprites/baby_dragon_walk.png", "w": 512, "h": 512, "seed": 229,
+        "input_images": ["public/assets/sprites/animal_dragon_walk.png"],
+    },
     # Food
     {
         "prompt": {"subject": "brown cricket insect", "style": STYLE, "pose": "side view, facing right", "appearance": "small brown cricket, long antennae, jumping legs", "background": BG, "details": "tiny game sprite, game-ready"},
@@ -48,6 +121,33 @@ assets = [
     {
         "prompt": {"subject": "gold coin", "style": STYLE, "appearance": "shiny gold coin with a small leaf emblem embossed on it, metallic sheen", "background": BG, "details": "game-ready icon, centered"},
         "path": "public/assets/sprites/coin.png", "w": 512, "h": 512, "seed": 400,
+    },
+    # Coin flip frame
+    {
+        "prompt": {"subject": "gold coin edge view", "style": STYLE, "appearance": "shiny gold coin seen from edge/side, metallic gold sheen, thin", "background": BG, "details": "game-ready icon, centered"},
+        "path": "public/assets/sprites/coin_flip.png", "w": 512, "h": 512, "seed": 401,
+    },
+    # Bronze coins
+    {
+        "prompt": {"subject": "bronze coin", "style": STYLE, "appearance": "copper-toned bronze coin with a small leaf emblem embossed on it, metallic copper sheen, dull brownish metal", "background": BG, "details": "game-ready icon, centered"},
+        "path": "public/assets/sprites/coin_bronze.png", "w": 512, "h": 512, "seed": 410,
+        "input_images": ["public/assets/sprites/coin.png"],
+    },
+    {
+        "prompt": {"subject": "bronze coin edge view", "style": STYLE, "appearance": "copper-toned bronze coin seen from edge/side, metallic copper sheen, dull brownish metal", "background": BG, "details": "game-ready icon, centered"},
+        "path": "public/assets/sprites/coin_bronze_flip.png", "w": 512, "h": 512, "seed": 411,
+        "input_images": ["public/assets/sprites/coin_flip.png"],
+    },
+    # Silver coins
+    {
+        "prompt": {"subject": "silver coin", "style": STYLE, "appearance": "shiny silver coin with a small leaf emblem embossed on it, metallic silver sheen, bright white-grey metal", "background": BG, "details": "game-ready icon, centered"},
+        "path": "public/assets/sprites/coin_silver.png", "w": 512, "h": 512, "seed": 412,
+        "input_images": ["public/assets/sprites/coin.png"],
+    },
+    {
+        "prompt": {"subject": "silver coin edge view", "style": STYLE, "appearance": "shiny silver coin seen from edge/side, metallic silver sheen, bright white-grey metal", "background": BG, "details": "game-ready icon, centered"},
+        "path": "public/assets/sprites/coin_silver_flip.png", "w": 512, "h": 512, "seed": 413,
+        "input_images": ["public/assets/sprites/coin_flip.png"],
     },
     # Egg pieces
     {
@@ -101,6 +201,47 @@ assets = [
         "prompt": {"subject": "millipede", "style": STYLE, "pose": "side view, facing right, crawling", "appearance": "brown segmented millipede, many tiny legs, cute rounded segments", "background": BG, "details": "game-ready sprite"},
         "path": "public/assets/sprites/helper_millipede.png", "w": 512, "h": 512, "seed": 607,
     },
+    # Helper pet walk frames
+    {
+        "prompt": {"subject": "cute tortoise walking", "style": STYLE, "pose": "side view, facing right, one leg forward in walking motion", "appearance": "small green-brown tortoise, friendly, dome shell, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/helper_tortoise_walk.png", "w": 512, "h": 512, "seed": 610,
+        "input_images": ["public/assets/sprites/helper_tortoise.png"],
+    },
+    {
+        "prompt": {"subject": "hermit crab walking", "style": STYLE, "pose": "side view, facing right, legs moving", "appearance": "cute hermit crab in colorful spiral shell, orange claws, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/helper_hermit_crab_walk.png", "w": 512, "h": 512, "seed": 611,
+        "input_images": ["public/assets/sprites/helper_hermit_crab.png"],
+    },
+    {
+        "prompt": {"subject": "praying mantis walking", "style": STYLE, "pose": "side view, facing right, legs in walking motion", "appearance": "bright green praying mantis, large forelegs, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/helper_mantis_walk.png", "w": 512, "h": 512, "seed": 612,
+        "input_images": ["public/assets/sprites/helper_mantis.png"],
+    },
+    {
+        "prompt": {"subject": "garden snail crawling", "style": STYLE, "pose": "side view, facing right, body stretched forward", "appearance": "cute snail with golden-brown spiral shell, crawling pose", "background": BG, "details": "game-ready sprite, crawling pose"},
+        "path": "public/assets/sprites/helper_snail_walk.png", "w": 512, "h": 512, "seed": 613,
+        "input_images": ["public/assets/sprites/helper_snail.png"],
+    },
+    {
+        "prompt": {"subject": "stag beetle walking", "style": STYLE, "pose": "side view, facing right, legs in walking motion", "appearance": "dark green-black stag beetle, large mandibles, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/helper_beetle_walk.png", "w": 512, "h": 512, "seed": 614,
+        "input_images": ["public/assets/sprites/helper_beetle.png"],
+    },
+    {
+        "prompt": {"subject": "scorpion walking", "style": STYLE, "pose": "side view, facing right, legs moving, tail raised", "appearance": "dark red-brown scorpion, curved stinger tail, walking pose", "background": BG, "details": "game-ready sprite, walking pose"},
+        "path": "public/assets/sprites/helper_scorpion_walk.png", "w": 512, "h": 512, "seed": 615,
+        "input_images": ["public/assets/sprites/helper_scorpion.png"],
+    },
+    {
+        "prompt": {"subject": "small green tree snake slithering", "style": STYLE, "pose": "side view, slithering motion", "appearance": "bright green tree snake, slender body, slithering pose", "background": BG, "details": "game-ready sprite, slithering pose"},
+        "path": "public/assets/sprites/helper_snake_walk.png", "w": 512, "h": 512, "seed": 616,
+        "input_images": ["public/assets/sprites/helper_snake.png"],
+    },
+    {
+        "prompt": {"subject": "millipede crawling", "style": STYLE, "pose": "side view, facing right, legs rippling", "appearance": "brown segmented millipede, many tiny legs in wave motion, crawling pose", "background": BG, "details": "game-ready sprite, crawling pose"},
+        "path": "public/assets/sprites/helper_millipede_walk.png", "w": 512, "h": 512, "seed": 617,
+        "input_images": ["public/assets/sprites/helper_millipede.png"],
+    },
     # UI
     {
         "prompt": {"asset_type": "ui_component", "element": "shop button frame", "style": "pixel art, 2D game UI, retro aesthetic", "shape": "square button, wooden frame with stone inset", "background": "dark interior", "details": "rustic terrarium themed, ornate but simple"},
@@ -133,6 +274,7 @@ if __name__ == "__main__":
                 width=asset["w"],
                 height=asset["h"],
                 seed=asset.get("seed"),
+                input_images=asset.get("input_images"),
             )
             print(f"  -> Done: {result['save_path']}")
         except Exception as e:

@@ -39,6 +39,7 @@ export class HelperPet extends Phaser.GameObjects.Sprite {
             this.wanderPauseTimer -= delta;
             const body = this.body as Phaser.Physics.Arcade.Body;
             body.setVelocity(0, 0);
+            this.playIdle();
             return;
         }
 
@@ -50,6 +51,7 @@ export class HelperPet extends Phaser.GameObjects.Sprite {
             };
             const body = this.body as Phaser.Physics.Arcade.Body;
             body.setVelocity(0, 0);
+            this.playIdle();
             return;
         }
 
@@ -57,6 +59,21 @@ export class HelperPet extends Phaser.GameObjects.Sprite {
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(Math.cos(angle) * WANDER_SPEED, Math.sin(angle) * WANDER_SPEED);
         this.setFlipX(body.velocity.x < 0);
+        this.playWalk();
+    }
+
+    private playWalk(): void {
+        const walkKey = `${this.petConfig.spriteKey}_walk`;
+        if (this.scene.anims.exists(walkKey) && this.anims.currentAnim?.key !== walkKey) {
+            this.play(walkKey);
+        }
+    }
+
+    private playIdle(): void {
+        const idleKey = `${this.petConfig.spriteKey}_idle`;
+        if (this.scene.anims.exists(idleKey) && this.anims.currentAnim?.key !== idleKey) {
+            this.play(idleKey);
+        }
     }
 
     private reachedTarget(): boolean {

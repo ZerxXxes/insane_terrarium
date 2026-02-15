@@ -9,6 +9,9 @@ export interface AnimalConfig {
     unlockLevel: number;
     spriteKey: string;
     spriteScale: number;
+    babySpriteKey: string;
+    babySpriteScale: number;
+    feedsToGrow: number; // feedings needed to become adult
 }
 
 export const ANIMAL_DATA: Record<string, AnimalConfig> = {
@@ -23,6 +26,9 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         unlockLevel: 1,
         spriteKey: 'animal_gecko',
         spriteScale: 0.1,
+        babySpriteKey: 'baby_gecko',
+        babySpriteScale: 0.06,
+        feedsToGrow: 3,
     },
     frog: {
         key: 'frog',
@@ -35,6 +41,9 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         unlockLevel: 1,
         spriteKey: 'animal_frog',
         spriteScale: 0.1,
+        babySpriteKey: 'baby_frog',
+        babySpriteScale: 0.06,
+        feedsToGrow: 3,
     },
     chameleon: {
         key: 'chameleon',
@@ -47,6 +56,9 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         unlockLevel: 2,
         spriteKey: 'animal_chameleon',
         spriteScale: 0.12,
+        babySpriteKey: 'baby_chameleon',
+        babySpriteScale: 0.07,
+        feedsToGrow: 4,
     },
     salamander: {
         key: 'salamander',
@@ -59,6 +71,9 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         unlockLevel: 3,
         spriteKey: 'animal_salamander',
         spriteScale: 0.12,
+        babySpriteKey: 'baby_salamander',
+        babySpriteScale: 0.07,
+        feedsToGrow: 4,
     },
     dragon: {
         key: 'dragon',
@@ -71,5 +86,8 @@ export const ANIMAL_DATA: Record<string, AnimalConfig> = {
         unlockLevel: 4,
         spriteKey: 'animal_dragon',
         spriteScale: 0.15,
+        babySpriteKey: 'baby_dragon',
+        babySpriteScale: 0.09,
+        feedsToGrow: 5,
     },
 };

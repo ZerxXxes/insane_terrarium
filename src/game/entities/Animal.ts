@@ -16,6 +16,8 @@ export class Animal extends Phaser.GameObjects.Sprite {
     config: AnimalConfig;
     hunger: number;
     isAlive: boolean = true;
+    isBaby: boolean = true;
+    feedCount: number = 0;
 
     private wanderTarget: { x: number; y: number } | null = null;
     private wanderPauseTimer: number = 0;
@@ -27,11 +29,11 @@ export class Animal extends Phaser.GameObjects.Sprite {
     private hungerJitter: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, animalConfig: AnimalConfig) {
-        super(scene, x, y, animalConfig.spriteKey);
+        super(scene, x, y, animalConfig.babySpriteKey);
 
         this.config = animalConfig;
         this.hunger = animalConfig.maxHunger;
-        this.setScale(animalConfig.spriteScale);
+        this.setScale(animalConfig.babySpriteScale);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -56,6 +58,10 @@ export class Animal extends Phaser.GameObjects.Sprite {
         this.thoughtBubble = new ThoughtBubble(scene, this.displayHeight);
 
         this.setDepth(10);
+    }
+
+    get currentSpriteKey(): string {
+        return this.isBaby ? this.config.babySpriteKey : this.config.spriteKey;
     }
 
     get isHungry(): boolean {
@@ -100,6 +106,59 @@ export class Animal extends Phaser.GameObjects.Sprite {
         if (!this.isAlive) return;
         this.hunger = Math.min(this.hunger + nutrition, this.config.maxHunger);
         this.seekingFood = null;
+
+        if (this.isBaby) {
+            this.feedCount++;
+            if (this.feedCount >= this.config.feedsToGrow) {
+                this.growUp();
+            }
+        }
+    }
+
+    private growUp(): void {
+        this.isBaby = false;
+
+        // Swap texture to adult sprite
+        this.setTexture(this.config.spriteKey);
+
+        // Tween scale to adult size
+        this.scene.tweens.add({
+            targets: this,
+            scaleX: this.config.spriteScale,
+            scaleY: this.config.spriteScale,
+            duration: 600,
+            ease: 'Back.easeOut',
+        });
+
+        // Sparkle particles for growth effect
+        for (let i = 0; i < 10; i++) {
+            const spark = this.scene.add.circle(this.x, this.y, Phaser.Math.Between(2, 5), 0xfbbf24).setDepth(20).setAlpha(0.9);
+            const angle = (Math.PI * 2 * i) / 10;
+            this.scene.tweens.add({
+                targets: spark,
+                x: this.x + Math.cos(angle) * Phaser.Math.Between(25, 50),
+                y: this.y + Math.sin(angle) * Phaser.Math.Between(25, 50),
+                alpha: 0,
+                scale: 2,
+                duration: 600,
+                ease: 'Quad.easeOut',
+                onComplete: () => spark.destroy(),
+            });
+        }
+
+        // Update shadow size for adult
+        this.scene.time.delayedCall(600, () => {
+            if (!this.active) return;
+            const shadowWidth = this.displayWidth * 0.7;
+            const shadowHeight = this.displayWidth * 0.25;
+            this.shadow.setSize(shadowWidth, shadowHeight);
+        });
+
+        // Update thought bubble offset for larger adult
+        this.scene.time.delayedCall(600, () => {
+            if (!this.active) return;
+            this.thoughtBubble.updateParentHeight(this.displayHeight);
+        });
     }
 
     seekFood(food: Phaser.GameObjects.Sprite): void {
@@ -157,7 +216,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
     }
 
     private tryDropCoin(): void {
-        if (!this.isAlive || this.isHungry) return;
+        if (!this.isAlive || this.isHungry || this.isBaby) return;
         this.emit('dropCoin', { x: this.x, y: this.y, value: this.config.coinValue });
     }
 
@@ -189,7 +248,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
         this.setFlipX(body.velocity.x < 0);
 
         // Play walk animation
-        const walkKey = `${this.config.spriteKey}_walk`;
+        const walkKey = `${this.currentSpriteKey}_walk`;
         if (this.scene.anims.exists(walkKey) && this.anims.currentAnim?.key !== walkKey) {
             this.play(walkKey);
         }
@@ -201,7 +260,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
 
         // Play idle when stopped
         if (vx === 0 && vy === 0) {
-            const idleKey = `${this.config.spriteKey}_idle`;
+            const idleKey = `${this.currentSpriteKey}_idle`;
             if (this.scene.anims.exists(idleKey) && this.anims.currentAnim?.key !== idleKey) {
                 this.play(idleKey);
             }

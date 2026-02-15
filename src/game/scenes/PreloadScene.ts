@@ -49,8 +49,24 @@ export class PreloadScene extends Phaser.Scene {
         this.load.image('animal_salamander_walk', 'assets/sprites/animal_salamander_walk.png');
         this.load.image('animal_dragon_walk', 'assets/sprites/animal_dragon_walk.png');
 
-        // Coin animation
+        // Baby animals (idle + walk)
+        this.load.image('baby_gecko', 'assets/sprites/baby_gecko.png');
+        this.load.image('baby_gecko_walk', 'assets/sprites/baby_gecko_walk.png');
+        this.load.image('baby_frog', 'assets/sprites/baby_frog.png');
+        this.load.image('baby_frog_walk', 'assets/sprites/baby_frog_walk.png');
+        this.load.image('baby_chameleon', 'assets/sprites/baby_chameleon.png');
+        this.load.image('baby_chameleon_walk', 'assets/sprites/baby_chameleon_walk.png');
+        this.load.image('baby_salamander', 'assets/sprites/baby_salamander.png');
+        this.load.image('baby_salamander_walk', 'assets/sprites/baby_salamander_walk.png');
+        this.load.image('baby_dragon', 'assets/sprites/baby_dragon.png');
+        this.load.image('baby_dragon_walk', 'assets/sprites/baby_dragon_walk.png');
+
+        // Coin animation frames
         this.load.image('coin_flip', 'assets/sprites/coin_flip.png');
+        this.load.image('coin_bronze', 'assets/sprites/coin_bronze.png');
+        this.load.image('coin_bronze_flip', 'assets/sprites/coin_bronze_flip.png');
+        this.load.image('coin_silver', 'assets/sprites/coin_silver.png');
+        this.load.image('coin_silver_flip', 'assets/sprites/coin_silver_flip.png');
 
         // Food
         this.load.image('food_cricket', 'assets/sprites/food_cricket.png');
@@ -73,6 +89,16 @@ export class PreloadScene extends Phaser.Scene {
         this.load.image('helper_scorpion', 'assets/sprites/helper_scorpion.png');
         this.load.image('helper_snake', 'assets/sprites/helper_snake.png');
         this.load.image('helper_millipede', 'assets/sprites/helper_millipede.png');
+
+        // Helper pet walk frames
+        this.load.image('helper_tortoise_walk', 'assets/sprites/helper_tortoise_walk.png');
+        this.load.image('helper_hermit_crab_walk', 'assets/sprites/helper_hermit_crab_walk.png');
+        this.load.image('helper_mantis_walk', 'assets/sprites/helper_mantis_walk.png');
+        this.load.image('helper_snail_walk', 'assets/sprites/helper_snail_walk.png');
+        this.load.image('helper_beetle_walk', 'assets/sprites/helper_beetle_walk.png');
+        this.load.image('helper_scorpion_walk', 'assets/sprites/helper_scorpion_walk.png');
+        this.load.image('helper_snake_walk', 'assets/sprites/helper_snake_walk.png');
+        this.load.image('helper_millipede_walk', 'assets/sprites/helper_millipede_walk.png');
 
         // UI
         this.load.image('shop_button', 'assets/ui/shop_button.png');
@@ -105,12 +131,71 @@ export class PreloadScene extends Phaser.Scene {
             });
         }
 
-        // Coin spin animation
+        // Baby animal walk/idle animations (same 2-frame pattern)
+        for (const name of animals) {
+            const key = `baby_${name}`;
+            this.anims.create({
+                key: `${key}_walk`,
+                frames: [
+                    { key: key },
+                    { key: `${key}_walk` },
+                ],
+                frameRate: 4,
+                repeat: -1,
+            });
+            this.anims.create({
+                key: `${key}_idle`,
+                frames: [{ key: key }],
+                frameRate: 1,
+                repeat: -1,
+            });
+        }
+
+        // Helper pet walk/idle animations (same 2-frame pattern)
+        const helpers = ['tortoise', 'hermit_crab', 'mantis', 'snail', 'beetle', 'scorpion', 'snake', 'millipede'];
+        for (const name of helpers) {
+            const key = `helper_${name}`;
+            this.anims.create({
+                key: `${key}_walk`,
+                frames: [
+                    { key: key },
+                    { key: `${key}_walk` },
+                ],
+                frameRate: 4,
+                repeat: -1,
+            });
+            this.anims.create({
+                key: `${key}_idle`,
+                frames: [{ key: key }],
+                frameRate: 1,
+                repeat: -1,
+            });
+        }
+
+        // Coin spin animations (gold, bronze, silver)
         this.anims.create({
             key: 'coin_spin',
             frames: [
                 { key: 'coin' },
                 { key: 'coin_flip' },
+            ],
+            frameRate: 4,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coin_bronze_spin',
+            frames: [
+                { key: 'coin_bronze' },
+                { key: 'coin_bronze_flip' },
+            ],
+            frameRate: 4,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coin_silver_spin',
+            frames: [
+                { key: 'coin_silver' },
+                { key: 'coin_silver_flip' },
             ],
             frameRate: 4,
             repeat: -1,
