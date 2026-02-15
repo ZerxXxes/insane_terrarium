@@ -20,8 +20,8 @@ assets = [
         "path": "public/assets/sprites/animal_frog.png", "w": 512, "h": 512, "seed": 201,
     },
     {
-        "prompt": {"subject": "chameleon lizard", "style": STYLE, "pose": "side view, facing right, standing on branch", "appearance": "green and teal body, coiled tail, bulging eyes, color-shifting skin", "background": BG, "details": "game-ready sprite"},
-        "path": "public/assets/sprites/animal_chameleon.png", "w": 512, "h": 512, "seed": 202,
+        "prompt": {"subject": "chameleon lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "green and teal body, coiled tail, bulging eyes, color-shifting skin", "background": BG, "details": "game-ready sprite, no ground, no branch, floating pose"},
+        "path": "public/assets/sprites/animal_chameleon.png", "w": 512, "h": 512, "seed": 232,
     },
     {
         "prompt": {"subject": "fire salamander", "style": STYLE, "pose": "side view, facing right, walking", "appearance": "black body with bright yellow spots, sleek amphibian, moist skin", "background": BG, "details": "game-ready sprite"},
@@ -64,8 +64,8 @@ assets = [
         "input_images": ["public/assets/sprites/animal_frog.png"],
     },
     {
-        "prompt": {"subject": "baby chameleon lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby chameleon, oversized head, huge bulging cute eyes, baby proportions", "background": BG, "details": "game-ready sprite, baby animal"},
-        "path": "public/assets/sprites/baby_chameleon.png", "w": 512, "h": 512, "seed": 224,
+        "prompt": {"subject": "baby chameleon lizard", "style": STYLE, "pose": "side view, facing right, standing", "appearance": "tiny baby chameleon, oversized head, huge bulging cute eyes, baby proportions, green and teal", "background": BG, "details": "game-ready sprite, baby animal, no ground, no branch, floating pose"},
+        "path": "public/assets/sprites/baby_chameleon.png", "w": 512, "h": 512, "seed": 234,
         "input_images": ["public/assets/sprites/animal_chameleon.png"],
     },
     {
