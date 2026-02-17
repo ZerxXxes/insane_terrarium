@@ -77,11 +77,15 @@ export class PoacherAI {
         }
 
         poacher.on('repelled', () => {
-            this.activePoacherGroup.remove(poacher, true);
+            this.activePoacherGroup.remove(poacher, false);
         });
 
         poacher.on('grabbed', () => {
-            this.activePoacherGroup.remove(poacher, true);
+            this.activePoacherGroup.remove(poacher, false);
+        });
+
+        poacher.on('destroy', () => {
+            this.activePoacherGroup.remove(poacher, false);
         });
 
         this.activePoacherGroup.add(poacher);

@@ -18,7 +18,7 @@ export class ShopScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#1a1a2e');
 
         const helperManager = new HelperManager(this.game);
-        const pair = helperManager.getRandomUnownedPair();
+        const choices = helperManager.getRandomUnownedChoices(2);
 
         this.add.text(GAME_WIDTH / 2, 60, 'Pick a Helper Pet', {
             fontSize: '36px',
@@ -33,7 +33,7 @@ export class ShopScene extends Phaser.Scene {
             color: '#aaaaaa',
         }).setOrigin(0.5);
 
-        if (!pair) {
+        if (choices.length === 0) {
             // All pets owned — skip to next level
             this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'You have all helper pets!', {
                 fontSize: '24px',
@@ -46,9 +46,11 @@ export class ShopScene extends Phaser.Scene {
             return;
         }
 
-        const positions = [GAME_WIDTH / 3, (GAME_WIDTH / 3) * 2];
+        const positions = choices.length === 1
+            ? [GAME_WIDTH / 2]
+            : [GAME_WIDTH / 3, (GAME_WIDTH / 3) * 2];
 
-        pair.forEach((petConfig: HelperPetConfig, i: number) => {
+        choices.forEach((petConfig: HelperPetConfig, i: number) => {
             const x = positions[i];
             const y = GAME_HEIGHT / 2 - 20;
 

@@ -35,6 +35,9 @@ export class GameScene extends Phaser.Scene {
     private economy!: EconomyManager;
     private levelManager!: LevelManager;
     poacherAI: PoacherAI | null = null;
+    private animalFoodOverlap: Phaser.Physics.Arcade.Collider | null = null;
+    private cheatProgress: number = 0;
+    private readonly cheatCode: string = 'iddqd';
 
     // Helper pet effect hooks
     private coinBoostFn: ((x: number, y: number) => number) | null = null;
@@ -51,6 +54,83 @@ export class GameScene extends Phaser.Scene {
         this.coinBoostFn = null;
         this.nutritionMultiplierFn = null;
         this.breedCheckFn = null;
+        this.poacherAI = null;
+        this.cheatProgress = 0;
+    }
+
+    private handlePointerDown = (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]): void => {
+        if (currentlyOver.length > 0) return;
+        if (pointer.y >= SUBSTRATE_TOP && pointer.y <= SUBSTRATE_BOTTOM) {
+            this.dropFood(pointer.x, pointer.y);
+        }
+    };
+
+    private handleAnimalFoodOverlap = (_animalObj: Phaser.GameObjects.GameObject, _foodObj: Phaser.GameObjects.GameObject): void => {
+        const animal = _animalObj as Animal;
+        const food = _foodObj as Food;
+        if (!animal.isAlive || !animal.isHungry || !food.active) return;
+
+        let nutrition = food.nutrition;
+        if (this.nutritionMultiplierFn) {
+            nutrition *= this.nutritionMultiplierFn();
+        }
+
+        animal.feed(nutrition);
+        food.destroy();
+        this.events.emit('tutorialAdvance', 'animalFed');
+
+        // Tree Snake breed check
+        if (this.breedCheckFn && this.breedCheckFn()) {
+            this.spawnAnimal(animal.config);
+        }
+    };
+
+    private handleBuyAnimal = (key: string): void => {
+        const config = ANIMAL_DATA[key];
+        if (config) {
+            this.spawnAnimal(config);
+            this.events.emit('tutorialAdvance', 'shopUsed');
+        }
+    };
+
+    private handleSelectFood = (key: string): void => {
+        this.selectedFoodType = key;
+        this.events.emit('tutorialAdvance', 'shopUsed');
+    };
+
+    private handleEggBought = (): void => {
+        this.events.emit('tutorialAdvance', 'shopUsed');
+    };
+
+    private handleCheatKeyDown = (event: KeyboardEvent): void => {
+        const key = event.key.toLowerCase();
+        if (key === this.cheatCode[this.cheatProgress]) {
+            this.cheatProgress++;
+            if (this.cheatProgress === this.cheatCode.length) {
+                this.cheatProgress = 0;
+                this.levelManager.forceWin();
+            }
+        } else {
+            this.cheatProgress = key === this.cheatCode[0] ? 1 : 0;
+        }
+    };
+
+    private onSceneShutdown(): void {
+        this.input.off('pointerdown', this.handlePointerDown, this);
+        this.events.off('buyAnimal', this.handleBuyAnimal, this);
+        this.events.off('selectFood', this.handleSelectFood, this);
+        this.events.off('eggBought', this.handleEggBought, this);
+
+        const keyboard = this.input.keyboard;
+        if (keyboard) {
+            keyboard.off('keydown', this.handleCheatKeyDown, this);
+        }
+
+        this.animalFoodOverlap?.destroy();
+        this.animalFoodOverlap = null;
+
+        this.poacherAI?.destroy();
+        this.poacherAI = null;
     }
 
     create(): void {
@@ -81,52 +161,24 @@ export class GameScene extends Phaser.Scene {
         // Spawn starting animals
         this.spawnStarterAnimals();
 
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
+
         // Click to drop food (but not on interactive objects like coins or shop items)
-        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {
-            if (currentlyOver.length > 0) return;
-            if (pointer.y >= SUBSTRATE_TOP && pointer.y <= SUBSTRATE_BOTTOM) {
-                this.dropFood(pointer.x, pointer.y);
-            }
-        });
+        this.input.on('pointerdown', this.handlePointerDown, this);
 
         // Physics overlap: animals eat food
-        this.physics.add.overlap(this.animals, this.foods, (_animalObj, _foodObj) => {
-            const animal = _animalObj as Animal;
-            const food = _foodObj as Food;
-            if (!animal.isAlive || !animal.isHungry || !food.active) return;
-
-            let nutrition = food.nutrition;
-            if (this.nutritionMultiplierFn) {
-                nutrition *= this.nutritionMultiplierFn();
-            }
-
-            animal.feed(nutrition);
-            food.destroy();
-            this.events.emit('tutorialAdvance', 'animalFed');
-
-            // Tree Snake breed check
-            if (this.breedCheckFn && this.breedCheckFn()) {
-                this.spawnAnimal(animal.config);
-            }
-        });
+        this.animalFoodOverlap = this.physics.add.overlap(
+            this.animals,
+            this.foods,
+            this.handleAnimalFoodOverlap,
+            undefined,
+            this,
+        );
 
         // Shop events
-        this.events.on('buyAnimal', (key: string) => {
-            const config = ANIMAL_DATA[key];
-            if (config) {
-                this.spawnAnimal(config);
-                this.events.emit('tutorialAdvance', 'shopUsed');
-            }
-        });
-
-        this.events.on('selectFood', (key: string) => {
-            this.selectedFoodType = key;
-            this.events.emit('tutorialAdvance', 'shopUsed');
-        });
-
-        this.events.on('eggBought', () => {
-            this.events.emit('tutorialAdvance', 'shopUsed');
-        });
+        this.events.on('buyAnimal', this.handleBuyAnimal, this);
+        this.events.on('selectFood', this.handleSelectFood, this);
+        this.events.on('eggBought', this.handleEggBought, this);
 
         // Poacher AI (level 2+)
         if (levelConfig.poacherConfig) {
@@ -150,20 +202,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     private setupCheatCodes(): void {
-        const code = 'iddqd';
-        let progress = 0;
-
-        this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
-            if (event.key === code[progress]) {
-                progress++;
-                if (progress === code.length) {
-                    progress = 0;
-                    this.levelManager.forceWin();
-                }
-            } else {
-                progress = event.key === code[0] ? 1 : 0;
-            }
-        });
+        this.cheatProgress = 0;
+        const keyboard = this.input.keyboard;
+        if (!keyboard) return;
+        keyboard.on('keydown', this.handleCheatKeyDown, this);
     }
 
     update(_time: number, _delta: number): void {
@@ -220,7 +262,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         animal.on('died', () => {
-            this.animals.remove(animal, true);
+            this.animals.remove(animal, false);
         });
 
         this.animals.add(animal);

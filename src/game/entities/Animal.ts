@@ -151,7 +151,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
             if (!this.active) return;
             const shadowWidth = this.displayWidth * 0.7;
             const shadowHeight = this.displayWidth * 0.25;
-            this.shadow.setSize(shadowWidth, shadowHeight);
+            this.shadow.setDisplaySize(shadowWidth, shadowHeight);
         });
 
         // Update thought bubble offset for larger adult
@@ -174,6 +174,9 @@ export class Animal extends Phaser.GameObjects.Sprite {
 
     private die(): void {
         this.isAlive = false;
+        const body = this.body as Phaser.Physics.Arcade.Body;
+        body.setVelocity(0, 0);
+        body.enable = false;
         this.coinDropTimer.destroy();
         this.thoughtBubble.hide();
         this.thoughtBubble.destroy();

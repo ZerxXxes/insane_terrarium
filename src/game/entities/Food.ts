@@ -45,7 +45,7 @@ export class Food extends Phaser.GameObjects.Sprite {
         });
 
         // Fall to substrate level
-        const targetY = Math.min(y, SUBSTRATE_BOTTOM - 16);
+        const targetY = Phaser.Math.Clamp(y, SUBSTRATE_TOP + 16, SUBSTRATE_BOTTOM - 16);
         if (this.y < targetY) {
             this.glow.setVisible(false);
             scene.tweens.add({

@@ -49,4 +49,13 @@ export class EconomyManager extends Phaser.Events.EventEmitter {
         this.emit('eggPieceBought', index);
         return true;
     }
+
+    purchaseEggPiece(index: number, cost: number): boolean {
+        if (index < 0 || index >= this._eggPiecesBought.length) return false;
+        if (this._eggPiecesBought[index]) return false;
+        if (!this.spendCoins(cost)) return false;
+        this._eggPiecesBought[index] = true;
+        this.emit('eggPieceBought', index);
+        return true;
+    }
 }

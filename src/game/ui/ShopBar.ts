@@ -95,8 +95,7 @@ export class ShopBar {
             });
 
             item.on('purchase', (_id: string, price: number) => {
-                if (this.economy.spendCoins(price)) {
-                    this.economy.buyEggPiece(i);
+                if (this.economy.purchaseEggPiece(i, price)) {
                     item.markPurchased();
                     this.scene.events.emit('eggBought', i);
                 }

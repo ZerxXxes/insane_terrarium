@@ -98,7 +98,6 @@ export class Poacher extends Phaser.GameObjects.Sprite {
     private retreat(): void {
         this.retreating = true;
         this.removeInteractive();
-        this.emit('repelled');
 
         // Comical retreat: spin and fly off screen
         this.scene.tweens.add({
@@ -110,7 +109,7 @@ export class Poacher extends Phaser.GameObjects.Sprite {
             duration: 800,
             ease: 'Quad.easeIn',
             onComplete: () => {
-                this.healthBar.destroy();
+                this.emit('repelled');
                 this.destroy();
             },
         });
@@ -122,7 +121,10 @@ export class Poacher extends Phaser.GameObjects.Sprite {
         this.removeInteractive();
 
         const grabbed = this.target;
-        this.emit('grabbed', grabbed);
+        grabbed.isAlive = false;
+        const grabbedBody = grabbed.body as Phaser.Physics.Arcade.Body;
+        grabbedBody.setVelocity(0, 0);
+        grabbedBody.enable = false;
 
         // Grab animation: pull animal up and off screen
         this.scene.tweens.add({
@@ -133,7 +135,8 @@ export class Poacher extends Phaser.GameObjects.Sprite {
             ease: 'Quad.easeIn',
             onComplete: () => {
                 grabbed.emit('died', grabbed);
-                this.healthBar.destroy();
+                grabbed.destroy();
+                this.emit('grabbed', grabbed);
                 this.destroy();
             },
         });

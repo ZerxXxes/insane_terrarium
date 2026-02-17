@@ -35,18 +35,21 @@ export class HelperManager {
             .filter(Boolean);
     }
 
-    getRandomUnownedPair(): [HelperPetConfig, HelperPetConfig] | null {
+    getRandomUnownedChoices(maxChoices: number = 2): HelperPetConfig[] {
         const allKeys = Object.keys(HELPER_PET_DATA);
         const unowned = allKeys.filter(k => !this.ownedKeys.includes(k));
-        if (unowned.length < 2) return null;
+        if (unowned.length === 0) return [];
 
-        // Shuffle and pick 2
+        // Shuffle and pick up to maxChoices
         for (let i = unowned.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [unowned[i], unowned[j]] = [unowned[j], unowned[i]];
         }
 
-        return [HELPER_PET_DATA[unowned[0]], HELPER_PET_DATA[unowned[1]]];
+        const count = Math.max(1, Math.min(maxChoices, unowned.length));
+        return unowned.slice(0, count)
+            .map(key => HELPER_PET_DATA[key])
+            .filter(Boolean);
     }
 
     reset(): void {
