@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/GameConfig';
+import { AudioManager } from '../managers/AudioManager';
 
 export const TERRARIUM_STYLES = ['tropical', 'desert', 'rainforest'] as const;
 export type TerrariumStyle = typeof TERRARIUM_STYLES[number];
@@ -124,6 +125,37 @@ export class OptionsPanel extends Phaser.GameObjects.Container {
                 thumb.setAlpha(1);
             });
         }
+
+        // Sound toggle row
+        const audioManager = (this.scene.game.registry.get('audio') as AudioManager | undefined);
+
+        const soundLabel = this.scene.add.text(panelX - 60, panelY + 130, 'Sound:', {
+            fontSize: '20px',
+            color: '#ffffff',
+        }).setOrigin(1, 0.5);
+        this.add(soundLabel);
+
+        const getSoundText = (): string => (audioManager?.isMuted() ? 'OFF' : 'ON');
+        const getSoundBg = (): string => (audioManager?.isMuted() ? '#ef4444' : '#22c55e');
+
+        const soundBtn = this.scene.add.text(panelX - 40, panelY + 130, getSoundText(), {
+            fontSize: '20px',
+            color: '#ffffff',
+            backgroundColor: getSoundBg(),
+            padding: { x: 16, y: 6 },
+        }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
+        this.add(soundBtn);
+
+        soundBtn.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            pointer.event.stopPropagation();
+            if (audioManager) {
+                audioManager.setMuted(!audioManager.isMuted());
+                soundBtn.setText(getSoundText());
+                soundBtn.setStyle({ backgroundColor: getSoundBg() });
+            }
+        });
+        soundBtn.on('pointerover', () => soundBtn.setAlpha(0.8));
+        soundBtn.on('pointerout', () => soundBtn.setAlpha(1));
 
         // Close button
         const closeBtn = this.scene.add.text(panelX, panelY + panelH / 2 - 40, 'Close', {

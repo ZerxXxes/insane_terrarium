@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/GameConfig';
+import { AudioManager } from '../managers/AudioManager';
 
 const TOTAL_LEVELS = 5;
 
@@ -15,6 +16,10 @@ export class WinScene extends Phaser.Scene {
     }
 
     create(): void {
+        const audioManager = this.game.registry.get('audio') as AudioManager | undefined;
+        audioManager?.stopAmbient();
+        audioManager?.playWin();
+
         this.cameras.main.setBackgroundColor('#1a1a2e');
 
         const isFinalLevel = this.level >= TOTAL_LEVELS;

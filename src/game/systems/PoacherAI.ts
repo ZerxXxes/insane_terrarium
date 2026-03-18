@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { PoacherConfig } from '../config/LevelData';
 import { Animal } from '../entities/Animal';
 import { Poacher } from '../entities/Poacher';
+import { AudioManager } from '../managers/AudioManager';
 
 export class PoacherAI {
     private scene: Phaser.Scene;
@@ -16,6 +17,7 @@ export class PoacherAI {
         scene: Phaser.Scene,
         config: PoacherConfig,
         getAnimals: () => Animal[],
+        private audioManager?: AudioManager,
     ) {
         this.scene = scene;
         this.config = config;
@@ -50,6 +52,7 @@ export class PoacherAI {
         if (animals.length === 0) return;
 
         const poacher = new Poacher(this.scene, this.config);
+        this.audioManager?.playPoacherAlert();
 
         if (this.speedMultiplier !== 1) {
             poacher.setSpeedMultiplier(this.speedMultiplier);
@@ -87,6 +90,8 @@ export class PoacherAI {
         poacher.on('destroy', () => {
             this.activePoacherGroup.remove(poacher, false);
         });
+
+        poacher.on('hit', () => this.audioManager?.playPoacherHit());
 
         this.activePoacherGroup.add(poacher);
     }

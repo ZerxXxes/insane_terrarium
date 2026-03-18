@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/GameConfig';
+import { AudioManager } from '../managers/AudioManager';
 
 export class GameOverScene extends Phaser.Scene {
     constructor() {
@@ -7,6 +8,10 @@ export class GameOverScene extends Phaser.Scene {
     }
 
     create(): void {
+        const audioManager = this.game.registry.get('audio') as AudioManager | undefined;
+        audioManager?.stopAmbient();
+        audioManager?.playGameOver();
+
         this.cameras.main.setBackgroundColor('#1a0000');
 
         this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, 'Game Over', {

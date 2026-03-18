@@ -79,6 +79,7 @@ export class Poacher extends Phaser.GameObjects.Sprite {
         if (this.retreating || this.grabbing) return;
 
         this.clicksRemaining--;
+        this.emit('hit');
         this.healthBar.updateBar(this.clicksRemaining / this.maxClicks);
 
         // Flinch animation

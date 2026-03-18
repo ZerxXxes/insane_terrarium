@@ -23,6 +23,7 @@ import { ShopBar } from '../ui/ShopBar';
 import { PoacherAI } from '../systems/PoacherAI';
 import { Tutorial } from '../ui/Tutorial';
 import { getBackgroundKey } from '../ui/OptionsPanel';
+import { AudioManager } from '../managers/AudioManager';
 
 export class GameScene extends Phaser.Scene {
     level: number = 1;
@@ -76,6 +77,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         animal.feed(nutrition);
+        (this.registry.get('audio') as AudioManager | undefined)?.playEating();
         food.destroy();
         this.events.emit('tutorialAdvance', 'animalFed');
 
@@ -89,6 +91,7 @@ export class GameScene extends Phaser.Scene {
         const config = ANIMAL_DATA[key];
         if (config) {
             this.spawnAnimal(config);
+            (this.registry.get('audio') as AudioManager | undefined)?.playPurchase();
             this.events.emit('tutorialAdvance', 'shopUsed');
         }
     };
@@ -158,6 +161,9 @@ export class GameScene extends Phaser.Scene {
         // Shop bar
         new ShopBar(this, this.economy, this.level);
 
+        const audioManager = this.registry.get('audio') as AudioManager | undefined;
+        audioManager?.startAmbient();
+
         // Spawn starting animals
         this.spawnStarterAnimals();
 
@@ -186,6 +192,7 @@ export class GameScene extends Phaser.Scene {
                 this,
                 levelConfig.poacherConfig,
                 () => this.getAnimals(),
+                this.registry.get('audio') as AudioManager | undefined,
             );
         }
 
@@ -262,7 +269,12 @@ export class GameScene extends Phaser.Scene {
         });
 
         animal.on('died', () => {
+            (this.registry.get('audio') as AudioManager | undefined)?.playAnimalDeath();
             this.animals.remove(animal, false);
+        });
+
+        animal.on('grewUp', () => {
+            (this.registry.get('audio') as AudioManager | undefined)?.playAnimalGrow();
         });
 
         this.animals.add(animal);
@@ -338,6 +350,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         const food = new Food(this, x, y, foodConfig);
+        (this.registry.get('audio') as AudioManager | undefined)?.playFoodDrop();
         this.foods.add(food);
         this.events.emit('tutorialAdvance', 'foodDropped');
     }
@@ -346,6 +359,7 @@ export class GameScene extends Phaser.Scene {
         const coin = new Coin(this, x, y, value);
         coin.on('collected', (data: { value: number; x: number; y: number }) => {
             this.economy.addCoins(data.value);
+            (this.registry.get('audio') as AudioManager | undefined)?.playCoinCollect();
             this.coinCollectEffect(data.x, data.y);
             this.events.emit('tutorialAdvance', 'coinCollected');
         });

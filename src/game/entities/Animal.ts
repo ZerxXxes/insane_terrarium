@@ -116,6 +116,7 @@ export class Animal extends Phaser.GameObjects.Sprite {
     }
 
     private growUp(): void {
+        this.emit('grewUp');
         this.isBaby = false;
 
         // Swap texture to adult sprite

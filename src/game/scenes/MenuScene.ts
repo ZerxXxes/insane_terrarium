@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/GameConfig';
 import { HelperManager } from '../managers/HelperManager';
 import { OptionsPanel, getBackgroundKey, TerrariumStyle } from '../ui/OptionsPanel';
+import { AudioManager } from '../managers/AudioManager';
 
 export class MenuScene extends Phaser.Scene {
     private bg!: Phaser.GameObjects.Image;
@@ -12,6 +13,14 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create(): void {
+        // Init or retrieve AudioManager (only when WebAudio is available)
+        let audioManager = this.game.registry.get('audio') as AudioManager | undefined;
+        if (!audioManager && this.sound instanceof Phaser.Sound.WebAudioSoundManager) {
+            audioManager = new AudioManager(this.sound.context);
+            this.game.registry.set('audio', audioManager);
+        }
+        audioManager?.startAmbient();
+
         this.bg = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, getBackgroundKey())
             .setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
 

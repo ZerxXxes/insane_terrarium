@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH } from '../config/GameConfig';
 import { EconomyManager } from '../managers/EconomyManager';
+import { OptionsPanel, TerrariumStyle } from './OptionsPanel';
 
 export class HUD {
     private scene: Phaser.Scene;
@@ -8,6 +9,7 @@ export class HUD {
     private coinText!: Phaser.GameObjects.Text;
     private eggSlots: Phaser.GameObjects.Image[] = [];
     private levelText!: Phaser.GameObjects.Text;
+    private optionsPanel: OptionsPanel | null = null;
 
     constructor(scene: Phaser.Scene, economy: EconomyManager, level: number) {
         this.scene = scene;
@@ -16,6 +18,7 @@ export class HUD {
         this.createCoinCounter();
         this.createEggProgress();
         this.createLevelIndicator(level);
+        this.createOptionsButton();
 
         // Listen for economy changes
         economy.on('coinsChanged', () => this.updateCoinDisplay());
@@ -70,5 +73,25 @@ export class HUD {
                 duration: 200,
             });
         }
+    }
+
+    private createOptionsButton(): void {
+        const btn = this.scene.add.text(GAME_WIDTH / 2 + 100, 8, '⚙ Options', {
+            fontSize: '16px',
+            color: '#ffffff',
+            backgroundColor: '#444444',
+            padding: { x: 8, y: 4 },
+        }).setDepth(100).setOrigin(0, 0).setInteractive({ useHandCursor: true });
+
+        btn.on('pointerover', () => btn.setStyle({ backgroundColor: '#666666' }));
+        btn.on('pointerout', () => btn.setStyle({ backgroundColor: '#444444' }));
+        btn.on('pointerdown', () => {
+            if (this.optionsPanel) return;
+            this.optionsPanel = new OptionsPanel(
+                this.scene,
+                () => { this.optionsPanel = null; },
+                (_style: TerrariumStyle) => { /* no-op: background style not changed mid-game */ },
+            );
+        });
     }
 }
